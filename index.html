@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DealCard PK</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="top">
+    <div class="wrap top-row">
+      <div class="brand">
+        <span class="logo" aria-hidden="true">💳</span>
+        <div>
+          <h1>DealCard <span>PK</span></h1>
+          <p>Card discounts across Pakistan</p>
+        </div>
+      </div>
+      <button class="btn primary" data-act="add-card">＋ Add card</button>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="notice" role="note">
+      <strong>Sample data.</strong> The offers shown are illustrative placeholders, not live bank deals.
+      Always confirm the offer with the bank or merchant before paying.
+    </div>
+
+    <section class="panel" aria-labelledby="wallet-h">
+      <div class="panel-head">
+        <h2 id="wallet-h">My cards</h2>
+        <span class="muted small">Stored only in this browser · never enter full card numbers</span>
+      </div>
+      <div id="wallet" class="wallet"></div>
+    </section>
+
+    <section class="panel filters" aria-label="Filters">
+      <div class="filter-row">
+        <label class="field">
+          <span>City</span>
+          <select id="city"></select>
+        </label>
+        <label class="field">
+          <span>Bank</span>
+          <select id="bank"></select>
+        </label>
+        <label class="field">
+          <span>Card type</span>
+          <select id="ctype">
+            <option value="all">Credit &amp; debit</option>
+            <option value="credit">Credit only</option>
+            <option value="debit">Debit only</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>Sort by</span>
+          <select id="sort">
+            <option value="best">Biggest discount</option>
+            <option value="ending">Ending soonest</option>
+            <option value="az">Merchant A–Z</option>
+          </select>
+        </label>
+        <label class="field grow">
+          <span>Search</span>
+          <input id="q" type="search" placeholder="Merchant, e.g. Khaadi" autocomplete="off">
+        </label>
+      </div>
+      <div id="cats" class="chips" role="group" aria-label="Category"></div>
+      <label class="check">
+        <input id="mine" type="checkbox">
+        <span id="mine-label">Only deals for my cards</span>
+      </label>
+    </section>
+
+    <nav class="tabs" role="tablist" aria-label="Deal period">
+      <button role="tab" data-act="view" data-v="daily">Daily</button>
+      <button role="tab" data-act="view" data-v="weekly">Weekly</button>
+      <button role="tab" data-act="view" data-v="monthly">Monthly</button>
+    </nav>
+
+    <div id="view" aria-live="polite"></div>
+  </main>
+
+  <dialog id="card-dialog">
+    <form id="card-form" autocomplete="off">
+      <h2>Add a card</h2>
+      <p class="muted small">We only need the bank and card type to match offers. Don't enter the card number.</p>
+
+      <label class="field">
+        <span>Bank</span>
+        <select name="bank" id="f-bank" required></select>
+      </label>
+
+      <fieldset class="seg">
+        <legend>Card type</legend>
+        <label><input type="radio" name="type" value="credit" checked><span>Credit</span></label>
+        <label><input type="radio" name="type" value="debit"><span>Debit</span></label>
+      </fieldset>
+
+      <label class="field">
+        <span>Network</span>
+        <select name="network">
+          <option>Visa</option>
+          <option>Mastercard</option>
+          <option>UnionPay</option>
+          <option>PayPak</option>
+          <option>Other</option>
+        </select>
+      </label>
+
+      <div class="two">
+        <label class="field">
+          <span>Card name <em>(optional)</em></span>
+          <input name="name" maxlength="30" placeholder="e.g. Platinum">
+        </label>
+        <label class="field">
+          <span>Last 4 digits <em>(optional)</em></span>
+          <input name="last4" inputmode="numeric" pattern="\d{4}" maxlength="4" placeholder="1234">
+        </label>
+      </div>
+
+      <div class="dialog-actions">
+        <button type="button" class="btn" data-act="cancel-card">Cancel</button>
+        <button type="submit" class="btn primary">Save card</button>
+      </div>
+    </form>
+  </dialog>
+
+  <noscript><p class="wrap">This app needs JavaScript enabled.</p></noscript>
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
