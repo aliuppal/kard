@@ -1,66 +1,8 @@
-/* ------------------------------------------------------------------
-   DealCard PK — data
-   ------------------------------------------------------------------
-   !! SAMPLE DATA !!  The deals below are illustrative placeholders
-   showing how the app works. They are NOT live, verified bank offers.
-   Replace RAW_DEALS with real offers (from bank websites / merchant
-   pages / a scraper or API) before relying on it.
-
-   Deal fields
-     m        merchant name
-     c        category id (see CATEGORIES)
-     cities   'all' or an array of city names (see CITIES)
-     banks    array of bank ids (see BANKS)
-     types    ['credit'], ['debit'] or both
-     nets     (optional) restrict to card networks, e.g. ['Visa']
-     offer    short headline shown on the badge
-     pct      number used for "best discount" sorting
-     max/min  (optional) max discount / min spend text
-     sched    DAILY | W(days…) | M(dates…) | R(fromOffset, toOffset)
-     until    (optional) days from today the offer stays valid (default 45)
-     terms    fine print
-   ------------------------------------------------------------------ */
-
-window.BANKS = [
-  { id: 'hbl',       name: 'HBL',                 short: 'HBL',       color: '#00845a' },
-  { id: 'ubl',       name: 'UBL',                 short: 'UBL',       color: '#1d5fb4' },
-  { id: 'mcb',       name: 'MCB Bank',            short: 'MCB',       color: '#0f7f3e' },
-  { id: 'meezan',    name: 'Meezan Bank',         short: 'Meezan',    color: '#6a1b6f' },
-  { id: 'alfalah',   name: 'Bank Alfalah',        short: 'Alfalah',   color: '#d6262c' },
-  { id: 'scb',       name: 'Standard Chartered',  short: 'StanChart', color: '#0473ea' },
-  { id: 'faysal',    name: 'Faysal Bank',         short: 'Faysal',    color: '#0a6b8a' },
-  { id: 'askari',    name: 'Askari Bank',         short: 'Askari',    color: '#b3872a' },
-  { id: 'bahl',      name: 'Bank AL Habib',       short: 'BAHL',      color: '#8a1c2b' },
-  { id: 'allied',    name: 'Allied Bank',         short: 'ABL',       color: '#1b4d8f' },
-  { id: 'hmb',       name: 'Habib Metro Bank',    short: 'HabibMetro',color: '#c0392b' },
-  { id: 'js',        name: 'JS Bank',             short: 'JS',        color: '#e0731a' },
-  { id: 'soneri',    name: 'Soneri Bank',         short: 'Soneri',    color: '#a6371f' },
-  { id: 'bankislami',name: 'BankIslami',          short: 'BankIslami',color: '#1a8a5a' },
-  { id: 'bop',       name: 'Bank of Punjab',      short: 'BOP',       color: '#1e6b3c' },
-  { id: 'nbp',       name: 'National Bank of Pakistan', short: 'NBP', color: '#2a7a3b' }
-];
-
-window.CITIES = [
-  'Karachi', 'Lahore', 'Islamabad', 'Rawalpindi', 'Faisalabad', 'Multan',
-  'Peshawar', 'Quetta', 'Hyderabad', 'Sialkot', 'Gujranwala'
-];
-
-window.CATEGORIES = [
-  { id: 'dining',        name: 'Dining',            icon: '🍽️', color: '#c2410c' },
-  { id: 'fastfood',      name: 'Fast Food',         icon: '🍔', color: '#dc2626' },
-  { id: 'cafes',         name: 'Cafes',             icon: '☕', color: '#92400e' },
-  { id: 'groceries',     name: 'Groceries',         icon: '🛒', color: '#15803d' },
-  { id: 'fashion',       name: 'Fashion',           icon: '👗', color: '#be185d' },
-  { id: 'online',        name: 'Online Shopping',   icon: '📦', color: '#7c3aed' },
-  { id: 'electronics',   name: 'Electronics & EMI', icon: '📱', color: '#0369a1' },
-  { id: 'travel',        name: 'Travel & Hotels',   icon: '✈️', color: '#0e7490' },
-  { id: 'fuel',          name: 'Fuel',              icon: '⛽', color: '#b45309' },
-  { id: 'entertainment', name: 'Entertainment',     icon: '🎬', color: '#6d28d9' },
-  { id: 'health',        name: 'Health',            icon: '💊', color: '#059669' },
-  { id: 'beauty',        name: 'Beauty & Salon',    icon: '💇', color: '#db2777' },
-  { id: 'bills',         name: 'Telecom & Bills',   icon: '📶', color: '#475569' },
-  { id: 'books',         name: 'Books',             icon: '📚', color: '#4d7c0f' }
-];
+/* Kard — SAMPLE deals (offline fallback + seed source)
+   !! These are illustrative placeholders, NOT live bank offers. !!
+   The app uses them only when Supabase is not configured or unreachable.
+   Real deals live in the Supabase `deals` table and are managed from /admin.html.
+   Schedules: DAILY | W(days…) 0=Sun | M(dates…) | R(fromOffset, toOffset) relative to today. */
 
 /* ---- schedule helpers ---- */
 const DAILY = { t: 'daily' };

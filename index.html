@@ -3,7 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>DealCard PK</title>
+  <title>Kard — bank card deals in Pakistan</title>
+  <meta name="description" content="Find debit and credit card discounts across Pakistan — daily, weekly and monthly — filtered by your cards, city and category.">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -12,8 +13,8 @@
       <div class="brand">
         <span class="logo" aria-hidden="true">💳</span>
         <div>
-          <h1>DealCard <span>PK</span></h1>
-          <p>Card discounts across Pakistan</p>
+          <h1>Kard</h1>
+          <p>Bank card deals across Pakistan</p>
         </div>
       </div>
       <button class="btn primary" data-act="add-card">＋ Add card</button>
@@ -21,10 +22,7 @@
   </header>
 
   <main class="wrap">
-    <div class="notice" role="note">
-      <strong>Sample data.</strong> The offers shown are illustrative placeholders, not live bank deals.
-      Always confirm the offer with the bank or merchant before paying.
-    </div>
+    <div id="notice" class="notice" role="note" hidden></div>
 
     <section class="panel" aria-labelledby="wallet-h">
       <div class="panel-head">
@@ -81,6 +79,11 @@
     <div id="view" aria-live="polite"></div>
   </main>
 
+  <footer class="wrap foot">
+    <span>Kard · offers change — always confirm with the bank or merchant.</span>
+    <a href="admin.html">Admin</a>
+  </footer>
+
   <dialog id="card-dialog">
     <form id="card-form" autocomplete="off">
       <h2>Add a card</h2>
@@ -127,7 +130,9 @@
   </dialog>
 
   <noscript><p class="wrap">This app needs JavaScript enabled.</p></noscript>
-  <script src="data.js"></script>
+  <script src="catalog.js"></script>
+  <script src="sample-deals.js"></script>
+  <script src="config.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

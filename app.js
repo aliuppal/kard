@@ -23,23 +23,82 @@
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
   const store = {
-    get(k, def) { try { const v = localStorage.getItem('dcpk.' + k); return v == null ? def : JSON.parse(v); } catch (e) { return def; } },
-    set(k, v) { try { localStorage.setItem('dcpk.' + k, JSON.stringify(v)); } catch (e) { /* storage unavailable */ } }
+    get(k, def) { try { const v = localStorage.getItem('kard.' + k); return v == null ? def : JSON.parse(v); } catch (e) { return def; } },
+    set(k, v) { try { localStorage.setItem('kard.' + k, JSON.stringify(v)); } catch (e) { /* storage unavailable */ } }
   };
 
   /* ---------- data ---------- */
   const BANK = Object.fromEntries(BANKS.map(b => [b.id, b]));
   const CAT = Object.fromEntries(CATEGORIES.map(c => [c.id, c]));
 
-  const deals = RAW_DEALS.map((d, i) => {
-    let from = addDays(today, -60);
-    let until = addDays(today, d.until != null ? d.until : 45);
-    if (d.sched.t === 'range') {
-      from = addDays(today, d.sched.from);
-      until = addDays(today, d.sched.to);
+  const catOf = id => CAT[id] || { id, name: id, icon: '🏷️', color: '#64748b' };
+  const CFG = window.KARD_CONFIG || {};
+  const FAR = 36500; // "no start / no end" sentinel, in days
+  let deals = [];
+
+  const parseDate = s => { const [y, m, d] = String(s).slice(0, 10).split('-').map(Number); return new Date(y, m - 1, d); };
+
+  // Normalise a built-in sample deal (relative-day schedules) into the shape the UI uses.
+  function fromSample(d, i) {
+    const range = d.sched.t === 'range';
+    return Object.assign({}, d, {
+      id: 's' + i,
+      from: addDays(today, range ? d.sched.from : -FAR),
+      until: addDays(today, range ? d.sched.to : FAR),
+      hasEnd: range,
+      types: d.types || ['credit', 'debit']
+    });
+  }
+
+  // Normalise a row from the Supabase `deals` table.
+  function fromRow(r) {
+    return {
+      id: r.id,
+      m: r.merchant,
+      c: r.category,
+      cities: r.all_cities ? 'all' : (r.cities || []),
+      banks: (r.banks || []).filter(b => BANK[b]),
+      types: r.card_types && r.card_types.length ? r.card_types : ['credit', 'debit'],
+      nets: r.networks && r.networks.length ? r.networks : null,
+      offer: r.offer,
+      pct: Number(r.discount_pct) || 0,
+      max: r.max_discount,
+      min: r.min_spend,
+      sched: { t: r.schedule_type, days: r.weekdays || [], dates: r.month_dates || [] },
+      from: r.start_date ? parseDate(r.start_date) : addDays(today, -FAR),
+      until: r.end_date ? parseDate(r.end_date) : addDays(today, FAR),
+      hasEnd: !!r.end_date,
+      terms: r.terms
+    };
+  }
+
+  // Load deals from Supabase when configured, otherwise (or on failure) use the built-in samples.
+  async function loadDeals() {
+    const sample = () => (window.RAW_DEALS || []).map(fromSample);
+    if (!CFG.supabaseUrl || !CFG.supabaseAnonKey) return { source: 'sample', deals: sample() };
+    try {
+      const res = await fetch(CFG.supabaseUrl.replace(/\/$/, '') + '/rest/v1/deals?select=*&active=eq.true&order=id', {
+        headers: { apikey: CFG.supabaseAnonKey, Authorization: 'Bearer ' + CFG.supabaseAnonKey }
+      });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const rows = await res.json();
+      return { source: 'db', deals: rows.map(fromRow).filter(d => d.banks.length) };
+    } catch (err) {
+      console.warn('Kard: could not load deals from Supabase, using sample data.', err);
+      return { source: 'fallback', deals: sample() };
     }
-    return Object.assign({}, d, { id: i, from, until, types: d.types || ['credit', 'debit'] });
-  });
+  }
+
+  function renderNotice(source) {
+    const el = $('#notice');
+    const msg = {
+      sample: '<strong>Sample data.</strong> The database isn\'t connected, so these are built-in placeholder offers, not live bank deals.',
+      fallback: '<strong>Couldn\'t reach the database</strong> — showing built-in sample offers instead. Please try again later.',
+      db: CFG.sampleNotice ? '<strong>Sample data.</strong> The offers shown are illustrative placeholders, not live bank deals. Always confirm the offer with the bank or merchant before paying.' : ''
+    }[source];
+    el.innerHTML = msg || '';
+    el.hidden = !msg;
+  }
 
   function occursOn(d, date) {
     if (date < d.from || date > d.until) return false;
@@ -94,7 +153,7 @@
       if (state.cat !== 'all' && d.c !== state.cat) return false;
       if (state.type !== 'all' && !d.types.includes(state.type)) return false;
       if (state.bank !== 'all' && !d.banks.includes(state.bank)) return false;
-      if (q && !(d.m + ' ' + d.offer + ' ' + CAT[d.c].name).toLowerCase().includes(q)) return false;
+      if (q && !(d.m + ' ' + d.offer + ' ' + catOf(d.c).name).toLowerCase().includes(q)) return false;
       if (mine && !matchCards(d).length) return false;
       return true;
     });
@@ -110,7 +169,7 @@
 
   /* ---------- rendering: pieces ---------- */
   function dealCard(d) {
-    const cat = CAT[d.c];
+    const cat = catOf(d.c);
     const mine = matchCards(d);
     const mineBanks = new Set(mine.map(c => c.bank));
     const banks = d.banks.slice().sort((a, b) => (mineBanks.has(b) ? 1 : 0) - (mineBanks.has(a) ? 1 : 0));
@@ -127,6 +186,8 @@
     const daysLeft = dayDiff(d.until, today);
     const startsIn = dayDiff(d.from, today);
     const timing = startsIn > 0 ? `<span class="tag">Starts in ${plural(startsIn, 'day')}</span>`
+      : !d.hasEnd ? ''
+      : daysLeft < 0 ? '<span class="tag end">Expired</span>'
       : daysLeft <= 5 ? `<span class="tag end">${daysLeft === 0 ? 'Ends today' : 'Ends in ' + plural(daysLeft, 'day')}</span>`
       : `<span class="tag">Valid till ${fmt(d.until)}</span>`;
     const limits = [d.max && 'Max ' + d.max, d.min && 'Min spend ' + d.min].filter(Boolean).join(' · ');
@@ -355,5 +416,12 @@
   }
 
   initControls();
-  render();
+  renderWallet();
+  renderFilters();
+  $('#view').innerHTML = '<div class="empty"><p>Loading deals…</p></div>';
+  loadDeals().then(({ source, deals: loaded }) => {
+    deals = loaded;
+    renderNotice(source);
+    renderView();
+  });
 })();
