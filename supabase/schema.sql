@@ -64,7 +64,75 @@ $$;
 revoke all on function public.is_admin() from public;
 grant execute on function public.is_admin() to anon, authenticated;
 
--- ── row-level security ───────────────────────────────────────────────────
+-- ── profiles ─────────────────────────────────────────────────────────────
+-- One row per signed-in user (web or mobile), created automatically on
+-- sign-up — Google or email/password both go through the same auth.users
+-- table, so one trigger covers both.
+create table if not exists public.profiles (
+  id          uuid        primary key references auth.users (id) on delete cascade,
+  email       text,
+  full_name   text,
+  avatar_url  text,
+  city        text        check (city is null or char_length(city) <= 60),
+  created_at  timestamptz not null default now(),
+  updated_at  timestamptz not null default now()
+);
+
+drop trigger if exists profiles_touch on public.profiles;
+create trigger profiles_touch before update on public.profiles
+  for each row execute function public.touch_updated_at();
+
+create or replace function public.handle_new_user() returns trigger
+language plpgsql security definer set search_path = public as $$
+begin
+  insert into public.profiles (id, email, full_name, avatar_url)
+  values (
+    new.id,
+    new.email,
+    coalesce(new.raw_user_meta_data ->> 'full_name', new.raw_user_meta_data ->> 'name'),
+    new.raw_user_meta_data ->> 'avatar_url'
+  )
+  on conflict (id) do nothing;
+  return new;
+end $$;
+
+drop trigger if exists on_auth_user_created on auth.users;
+create trigger on_auth_user_created after insert on auth.users
+  for each row execute function public.handle_new_user();
+
+alter table public.profiles enable row level security;
+
+drop policy if exists "profiles: read own or admin" on public.profiles;
+create policy "profiles: read own or admin" on public.profiles
+  for select to authenticated using (id = auth.uid() or public.is_admin());
+
+drop policy if exists "profiles: update own" on public.profiles;
+create policy "profiles: update own" on public.profiles
+  for update to authenticated using (id = auth.uid()) with check (id = auth.uid());
+
+-- ── user_cards ───────────────────────────────────────────────────────────
+-- A signed-in user's wallet, synced between the web app and the mobile app.
+-- Signed-out visitors keep using on-device storage only (see app.js / mobile).
+create table if not exists public.user_cards (
+  id         bigint generated always as identity primary key,
+  user_id    uuid        not null references auth.users (id) on delete cascade,
+  bank       text        not null,
+  card_type  text        not null check (card_type in ('credit', 'debit')),
+  network    text,
+  nickname   text        check (nickname is null or char_length(nickname) <= 30),
+  last4      text        check (last4 is null or last4 ~ '^\d{4}$'),
+  created_at timestamptz not null default now()
+);
+
+create index if not exists user_cards_user_idx on public.user_cards (user_id);
+
+alter table public.user_cards enable row level security;
+
+drop policy if exists "user_cards: owner only" on public.user_cards;
+create policy "user_cards: owner only" on public.user_cards
+  for all to authenticated using (user_id = auth.uid()) with check (user_id = auth.uid());
+
+-- ── row-level security: deals ───────────────────────────────────────────
 alter table public.deals enable row level security;
 
 drop policy if exists "public can read active deals" on public.deals;
@@ -84,12 +152,26 @@ drop policy if exists "admins can delete deals" on public.deals;
 create policy "admins can delete deals" on public.deals
   for delete to authenticated using (public.is_admin());
 
+-- ── enable Google sign-in ────────────────────────────────────────────────
+-- Authentication → Sign In / Providers → Google → paste the Client ID and
+-- Client Secret from Google Cloud Console (OAuth consent screen + OAuth
+-- client for "Web application"). Add Supabase's callback URL, shown on that
+-- same page, as an Authorized redirect URI in Google Cloud Console.
+--
+-- Regular users signing in with Google is expected and fine to leave open —
+-- it only creates a `profiles` row and lets them sync their card wallet.
+-- It does NOT grant admin access; that is controlled solely by the
+-- `admins` table below, checked by every write policy above.
+
 -- ── make yourself an admin ───────────────────────────────────────────────
--- 1. Supabase → Authentication → Users → "Add user" (email + password, tick auto-confirm).
--- 2. Then run this with that email:
+-- Sign in once (Google, on the public site, is easiest) so a profile row for
+-- you exists, then run this with your email — grants /admin access only:
 --
 --   insert into public.admins (user_id)
 --   select id from auth.users where email = 'you@example.com'
 --   on conflict do nothing;
 --
--- 3. Recommended: Authentication → Sign In / Providers → turn OFF "Allow new users to sign up".
+-- To find who already has admin access:
+--
+--   select p.email, p.full_name from public.admins a
+--   join public.profiles p on p.id = a.user_id;

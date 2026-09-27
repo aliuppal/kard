@@ -27,7 +27,10 @@
     <section class="panel" aria-labelledby="wallet-h">
       <div class="panel-head">
         <h2 id="wallet-h">My cards</h2>
-        <span class="muted small">Stored only in this browser · never enter full card numbers</span>
+        <div class="head-right">
+          <span class="muted small">Never enter full card numbers</span>
+          <div id="auth" class="auth"></div>
+        </div>
       </div>
       <div id="wallet" class="wallet"></div>
     </section>
@@ -130,6 +133,7 @@
   </dialog>
 
   <noscript><p class="wrap">This app needs JavaScript enabled.</p></noscript>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="catalog.js"></script>
   <script src="sample-deals.js"></script>
   <script src="config.js"></script>

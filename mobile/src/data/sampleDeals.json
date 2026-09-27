@@ -1,0 +1,1460 @@
+[
+  {
+    "m": "Kababjees",
+    "c": "dining",
+    "cities": [
+      "Karachi",
+      "Lahore",
+      "Islamabad"
+    ],
+    "banks": [
+      "ubl",
+      "meezan"
+    ],
+    "types": [
+      "credit",
+      "debit"
+    ],
+    "offer": "20% off",
+    "pct": 20,
+    "max": "Rs 1,500",
+    "sched": {
+      "t": "weekly",
+      "days": [
+        2
+      ]
+    },
+    "terms": "Dine-in only. Not combinable with other promotions."
+  },
+  {
+    "m": "Savour Foods",
+    "c": "dining",
+    "cities": [
+      "Islamabad",
+      "Rawalpindi",
+      "Lahore"
+    ],
+    "banks": [
+      "hbl"
+    ],
+    "types": [
+      "credit"
+    ],
+    "offer": "25% off",
+    "pct": 25,
+    "max": "Rs 2,000",
+    "sched": {
+      "t": "weekly",
+      "days": [
+        1,
+        3
+      ]
+    },
+    "terms": "Dine-in and takeaway. Excludes beverages."
+  },
+  {
+    "m": "Xander's",
+    "c": "dining",
+    "cities": [
+      "Karachi"
+    ],
+    "banks": [
+      "hbl",
+      "scb"
+    ],
+    "types": [
+      "credit"
+    ],
+    "offer": "20% off",
+    "pct": 20,
+    "sched": {
+      "t": "weekly",
+      "days": [
+        0
+      ]
+    },
+    "terms": "Valid on food bill before tax."
+  },
+  {
+    "m": "Bar.B.Q Tonight",
+    "c": "dining",
+    "cities": [
+      "Karachi",
+      "Lahore",
+      "Islamabad"
+    ],
+    "banks": [
+      "alfalah"
+    ],
+    "types": [
+      "credit"
+    ],
+    "offer": "20% off",
+    "pct": 20,
+    "max": "Rs 2,500",
+    "sched": {
+      "t": "weekly",
+      "days": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    "terms": "Dine-in only, weekdays."
+  },
+  {
+    "m": "Monal",
+    "c": "dining",
+    "cities": [
+      "Islamabad",
+      "Lahore"
+    ],
+    "banks": [
+      "askari",
+      "bahl"
+    ],
+    "types": [
+      "credit",
+      "debit"
+    ],
+    "offer": "15% off",
+    "pct": 15,
+    "sched": {
+      "t": "weekly",
+      "days": [
+        4,
+        5
+      ]
+    },
+    "terms": "Dine-in only. Advance booking recommended."
+  },
+  {
+    "m": "Kolachi",
+    "c": "dining",
+    "cities": [
+      "Karachi"
+    ],
+    "banks": [
+      "allied",
+      "soneri"
+    ],
+    "types": [
+      "credit",
+      "debit"
+    ],
+    "offer": "15% off",
+    "pct": 15,
+    "sched": {
+      "t": "weekly",
+      "days": [
+        3
+      ]
+    },
+    "terms": "Valid on total food bill."
+  },
+  {
+    "m": "Cooco's Den",
+    "c": "dining",
+    "cities": [
+      "Lahore"
+    ],
+    "banks": [
+      "js",
+      "bop"
+    ],
+    "types": [
+      "credit",
+      "debit"
+    ],
+    "offer": "15% off",
+    "pct": 15,
+    "sched": {
+      "t": "weekly",
+      "days": [
+        4
+      ]
+    },
+    "terms": "Dine-in only."
+  },
+  {
+    "m": "Hardee's",
+    "c": "fastfood",
+    "cities": "all",
+    "banks": [
+      "alfalah"
+    ],
+    "types": [
+      "credit",
+      "debit"
+    ],
+    "offer": "15% off",
+    "pct": 15,
+    "sched": {
+      "t": "daily"
+    },
+    "terms": "Dine-in and takeaway. Delivery excluded."
+  },
+  {
+    "m": "KFC",
+    "c": "fastfood",
+    "cities": "all",
+    "banks": [
+      "mcb",
+      "ubl"
+    ],
+    "types": [
+      "debit"
+    ],
+    "offer": "10% off",
+    "pct": 10,
+    "sched": {
+      "t": "daily"
+    },
+    "terms": "Valid on dine-in and takeaway."
+  },
+  {
+    "m": "Pizza Hut",
+    "c": "fastfood",
+    "cities": "all",
+    "banks": [
+      "scb"
+    ],
+    "types": [
+      "credit"
+    ],
+    "offer": "20% off",
+    "pct": 20,
+    "sched": {
+      "t": "weekly",
+      "days": [
+        4
+      ]
+    },
+    "terms": "Dine-in only on Thursdays."
+  },
+  {
+    "m": "McDonald's",
+    "c": "fastfood",
+    "cities": "all",
+    "banks": [
+      "faysal"
+    ],
+    "types": [
+      "credit"
+    ],
+    "offer": "15% off",
+    "pct": 15,
+    "sched": {
+      "t": "weekly",
+      "days": [
+        5,
+        6
+      ]
+    },
+    "terms": "Weekend offer. Excludes deals and combos already discounted."
+  },
+  {
+    "m": "Cheezious",
+    "c": "fastfood",
+    "cities": [
+      "Karachi",
+      "Lahore",
+      "Islamabad",
+      "Rawalpindi",
+      "Faisalabad",
+      "Peshawar"
+    ],
+    "banks": [
+      "meezan"
+    ],
+    "types": [
+      "credit",
+      "debit"
+    ],
+    "offer": "20% off",
+    "pct": 20,
+    "max": "Rs 800",
+    "sched": {
+      "t": "weekly",
+      "days": [
+        3
+      ]
+    },
+    "terms": "Dine-in only."
+  },
+  {
+    "m": "Broadway Pizza",
+    "c": "fastfood",
+    "cities": [
+      "Lahore",
+      "Islamabad",
+      "Rawalpindi",
+      "Faisalabad",
+      "Multan"
+    ],
+    "banks": [
+      "js"
+    ],
+    "types": [
+      "credit"
+    ],
+    "offer": "20% off",
+    "pct": 20,
+    "sched": {
+      "t": "weekly",
+      "days": [
+        2
+      ]
+    },
+    "terms": "Dine-in and takeaway."
+  },
+  {
+    "m": "Domino's",
+    "c": "fastfood",
+    "cities": "all",
+    "banks": [
+      "bankislami"
+    ],
+    "types": [
+      "credit",
+      "debit"
+    ],
+    "offer": "25% off",
+    "pct": 25,
+    "max": "Rs 1,000",
+    "sched": {
+      "t": "weekly",
+      "days": [
+        1
+      ]
+    },
+    "terms": "Online orders via the Domino's app or website."
+  },
+  {
+    "m": "Subway",
+    "c": "fastfood",
+    "cities": [
+      "Karachi",
+      "Lahore",
+      "Islamabad",
+      "Rawalpindi",
+      "Faisalabad",
+      "Multan"
+    ],
+    "banks": [
+      "hbl"
+    ],
+    "types": [
+      "debit"
+    ],
+    "offer": "10% off",
+    "pct": 10,
+    "sched": {
+      "t": "weekly",
+      "days": [
+        0
+      ]
+    },
+    "terms": "Dine-in and takeaway."
+  },
+  {
+    "m": "Gloria Jean's Coffees",
+    "c": "cafes",
+    "cities": [
+      "Karachi",
+      "Lahore",
+      "Islamabad"
+    ],
+    "banks": [
+      "ubl"
+    ],
+    "types": [
+      "credit",
+      "debit"
+    ],
+    "offer": "Buy 1 Get 1",
+    "pct": 50,
+    "sched": {
+      "t": "weekly",
+      "days": [
+        5
+      ]
+    },
+    "terms": "On selected beverages. Lower-priced item is free."
+  },
+  {
+    "m": "Espresso",
+    "c": "cafes",
+    "cities": [
+      "Lahore",
+      "Islamabad"
+    ],
+    "banks": [
+      "bahl"
+    ],
+    "types": [
+      "credit",
+      "debit"
+    ],
+    "offer": "15% off",
+    "pct": 15,
+    "sched": {
+      "t": "weekly",
+      "days": [
+        6,
+        0
+      ]
+    },
+    "terms": "Weekend offer."
+  },
+  {
+    "m": "Butlers Chocolate Café",
+    "c": "cafes",
+    "cities": [
+      "Lahore",
+      "Islamabad"
+    ],
+    "banks": [
+      "alfalah"
+    ],
+    "types": [
+      "credit"
+    ],
+    "offer": "15% off",
+    "pct": 15,
+    "sched": {
+      "t": "range",
+      "from": -4,
+      "to": 9
+    },
+    "terms": "On café menu items."
+  },
+  {
+    "m": "Imtiaz Supermarket",
+    "c": "groceries",
+    "cities": [
+      "Karachi",
+      "Hyderabad"
+    ],
+    "banks": [
+      "hbl",
+      "mcb"
+    ],
+    "types": [
+      "credit",
+      "debit"
+    ],
+    "offer": "5% off",
+    "pct": 5,
+    "max": "Rs 1,000",
+    "min": "Rs 5,000",
+    "sched": {
+      "t": "weekly",
+      "days": [
+        3
+      ]
+    },
+    "terms": "Wednesday shopping offer."
+  },
+  {
+    "m": "Carrefour",
+    "c": "groceries",
+    "cities": [
+      "Karachi",
+      "Lahore",
+      "Islamabad"
+    ],
+    "banks": [
+      "ubl",
+      "scb"
+    ],
+    "types": [
+      "credit"
+    ],
+    "offer": "10% off",
+    "pct": 10,
+    "max": "Rs 2,500",
+    "min": "Rs 10,000",
+    "sched": {
+      "t": "monthly",
+      "dates": [
+        1,
+        15
+      ]
+    },
+    "terms": "Valid on the 1st and 15th of every month."
+  },
+  {
+    "m": "Al-Fatah",
+    "c": "groceries",
+    "cities": [
+      "Lahore",
+      "Rawalpindi",
+      "Islamabad",
+      "Gujranwala",
+      "Faisalabad"
+    ],
+    "banks": [
+      "bahl"
+    ],
+    "types": [
+      "credit",
+      "debit"
+    ],
+    "offer": "7% off",
+    "pct": 7,
+    "max": "Rs 1,500",
+    "sched": {
+      "t": "weekly",
+      "days": [
+        6,
+        0
+      ]
+    },
+    "terms": "Weekend offer. Excludes dairy and baby products."
+  },
+  {
+    "m": "Metro Cash & Carry",
+    "c": "groceries",
+    "cities": [
+      "Karachi",
+      "Lahore",
+      "Islamabad",
+      "Faisalabad",
+      "Multan",
+      "Peshawar"
+    ],
+    "banks": [
+      "meezan"
+    ],
+    "types": [
+      "credit",
+      "debit"
+    ],
+    "offer": "8% off",
+    "pct": 8,
+    "max": "Rs 3,000",
+    "sched": {
+      "t": "range",
+      "from": -2,
+      "to": 12
+    },
+    "terms": "Valid for a limited period."
+  },
+  {
+    "m": "Naheed Supermarket",
+    "c": "groceries",
+    "cities": [
+      "Karachi"
+    ],
+    "banks": [
+      "faysal"
+    ],
+    "types": [
+      "credit",
+      "debit"
+    ],
+    "offer": "10% off",
+    "pct": 10,
+    "sched": {
+      "t": "weekly",
+      "days": [
+        2
+      ]
+    },
+    "terms": "Tuesday offer."
+  },
+  {
+    "m": "Chase Up",
+    "c": "groceries",
+    "cities": [
+      "Karachi"
+    ],
+    "banks": [
+      "hmb"
+    ],
+    "types": [
+      "credit",
+      "debit"
+    ],
+    "offer": "10% off",
+    "pct": 10,
+    "sched": {
+      "t": "weekly",
+      "days": [
+        1
+      ]
+    },
+    "terms": "Excludes sugar, flour and ghee."
+  },
+  {
+    "m": "Khaadi",
+    "c": "fashion",
+    "cities": "all",
+    "banks": [
+      "hbl",
+      "alfalah",
+      "scb"
+    ],
+    "types": [
+      "credit"
+    ],
+    "offer": "15% off",
+    "pct": 15,
+    "sched": {
+      "t": "range",
+      "from": -3,
+      "to": 7
+    },
+    "terms": "On regular-price items. Sale items excluded."
+  },
+  {
+    "m": "Sapphire",
+    "c": "fashion",
+    "cities": "all",
+    "banks": [
+      "ubl"
+    ],
+    "types": [
+      "credit",
+      "debit"
+    ],
+    "offer": "12% off",
+    "pct": 12,
+    "sched": {
+      "t": "range",
+      "from": -1,
+      "to": 10
+    },
+    "terms": "In-store and online."
+  },
+  {
+    "m": "Alkaram Studio",
+    "c": "fashion",
+    "cities": "all",
+    "banks": [
+      "mcb"
+    ],
+    "types": [
+      "credit"
+    ],
+    "offer": "10% off",
+    "pct": 10,
+    "sched": {
+      "t": "weekly",
+      "days": [
+        5
+      ]
+    },
+    "terms": "Friday offer on regular-price items."
+  },
+  {
+    "m": "Gul Ahmed",
+    "c": "fashion",
+    "cities": "all",
+    "banks": [
+      "meezan"
+    ],
+    "types": [
+      "credit",
+      "debit"
+    ],
+    "offer": "15% off",
+    "pct": 15,
+    "sched": {
+      "t": "range",
+      "from": 2,
+      "to": 16
+    },
+    "terms": "Upcoming festival offer."
+  },
+  {
+    "m": "Bonanza Satrangi",
+    "c": "fashion",
+    "cities": "all",
+    "banks": [
+      "askari"
+    ],
+    "types": [
+      "credit"
+    ],
+    "offer": "20% off",
+    "pct": 20,
+    "max": "Rs 4,000",
+    "sched": {
+      "t": "monthly",
+      "dates": [
+        1,
+        10,
+        25
+      ]
+    },
+    "terms": "Valid on the 1st, 10th and 25th of every month."
+  },
+  {
+    "m": "Outfitters",
+    "c": "fashion",
+    "cities": [
+      "Karachi",
+      "Lahore",
+      "Islamabad",
+      "Rawalpindi",
+      "Faisalabad",
+      "Multan",
+      "Peshawar"
+    ],
+    "banks": [
+      "js"
+    ],
+    "types": [
+      "credit",
+      "debit"
+    ],
+    "offer": "10% off",
+    "pct": 10,
+    "sched": {
+      "t": "weekly",
+      "days": [
+        3
+      ]
+    },
+    "terms": "Wednesday offer."
+  },
+  {
+    "m": "Bata",
+    "c": "fashion",
+    "cities": "all",
+    "banks": [
+      "allied"
+    ],
+    "types": [
+      "credit",
+      "debit"
+    ],
+    "offer": "15% off",
+    "pct": 15,
+    "sched": {
+      "t": "weekly",
+      "days": [
+        6
+      ]
+    },
+    "terms": "On selected footwear."
+  },
+  {
+    "m": "Junaid Jamshed",
+    "c": "fashion",
+    "cities": [
+      "Karachi",
+      "Lahore",
+      "Islamabad",
+      "Rawalpindi",
+      "Faisalabad",
+      "Multan"
+    ],
+    "banks": [
+      "nbp"
+    ],
+    "types": [
+      "debit"
+    ],
+    "offer": "10% off",
+    "pct": 10,
+    "sched": {
+      "t": "weekly",
+      "days": [
+        2
+      ]
+    },
+    "terms": "On regular-price items."
+  },
+  {
+    "m": "Servis",
+    "c": "fashion",
+    "cities": "all",
+    "banks": [
+      "bop"
+    ],
+    "types": [
+      "credit",
+      "debit"
+    ],
+    "offer": "12% off",
+    "pct": 12,
+    "sched": {
+      "t": "weekly",
+      "days": [
+        0
+      ]
+    },
+    "terms": "Sunday offer on selected footwear."
+  },
+  {
+    "m": "Daraz",
+    "c": "online",
+    "cities": "all",
+    "banks": [
+      "hbl",
+      "alfalah"
+    ],
+    "types": [
+      "credit"
+    ],
+    "offer": "12% off",
+    "pct": 12,
+    "max": "Rs 1,200",
+    "min": "Rs 3,000",
+    "sched": {
+      "t": "monthly",
+      "dates": [
+        25
+      ]
+    },
+    "terms": "Payday sale — valid on the 25th of every month."
+  },
+  {
+    "m": "Daraz (UnionPay)",
+    "c": "online",
+    "cities": "all",
+    "banks": [
+      "hbl",
+      "ubl",
+      "mcb"
+    ],
+    "types": [
+      "credit",
+      "debit"
+    ],
+    "nets": [
+      "UnionPay"
+    ],
+    "offer": "15% off",
+    "pct": 15,
+    "max": "Rs 1,500",
+    "sched": {
+      "t": "range",
+      "from": 0,
+      "to": 3
+    },
+    "terms": "UnionPay cards only. Limited-time."
+  },
+  {
+    "m": "foodpanda",
+    "c": "online",
+    "cities": "all",
+    "banks": [
+      "ubl",
+      "faysal"
+    ],
+    "types": [
+      "credit",
+      "debit"
+    ],
+    "offer": "25% off",
+    "pct": 25,
+    "max": "Rs 500",
+    "min": "Rs 1,200",
+    "sched": {
+      "t": "weekly",
+      "days": [
+        5
+      ]
+    },
+    "terms": "Friday food-delivery offer."
+  },
+  {
+    "m": "Homeshopping.pk",
+    "c": "electronics",
+    "cities": "all",
+    "banks": [
+      "hbl",
+      "ubl",
+      "scb"
+    ],
+    "types": [
+      "credit"
+    ],
+    "offer": "0% EMI 12 mo",
+    "pct": 0,
+    "min": "Rs 30,000",
+    "sched": {
+      "t": "monthly",
+      "dates": [
+        1,
+        15
+      ]
+    },
+    "terms": "Interest-free instalments. Processing fee may apply."
+  },
+  {
+    "m": "Shophive",
+    "c": "electronics",
+    "cities": "all",
+    "banks": [
+      "meezan"
+    ],
+    "types": [
+      "credit",
+      "debit"
+    ],
+    "offer": "10% off",
+    "pct": 10,
+    "max": "Rs 5,000",
+    "sched": {
+      "t": "range",
+      "from": 0,
+      "to": 9
+    },
+    "terms": "On selected laptops and accessories."
+  },
+  {
+    "m": "Telemart",
+    "c": "electronics",
+    "cities": "all",
+    "banks": [
+      "mcb",
+      "bahl"
+    ],
+    "types": [
+      "credit"
+    ],
+    "offer": "0% EMI 6 mo",
+    "pct": 0,
+    "min": "Rs 20,000",
+    "sched": {
+      "t": "daily"
+    },
+    "terms": "Interest-free instalments on selected items."
+  },
+  {
+    "m": "PIA",
+    "c": "travel",
+    "cities": "all",
+    "banks": [
+      "hbl",
+      "mcb"
+    ],
+    "types": [
+      "credit"
+    ],
+    "offer": "10% off",
+    "pct": 10,
+    "sched": {
+      "t": "range",
+      "from": 1,
+      "to": 20
+    },
+    "terms": "On domestic economy fares booked online."
+  },
+  {
+    "m": "Airblue",
+    "c": "travel",
+    "cities": "all",
+    "banks": [
+      "alfalah"
+    ],
+    "types": [
+      "credit",
+      "debit"
+    ],
+    "offer": "8% off",
+    "pct": 8,
+    "sched": {
+      "t": "weekly",
+      "days": [
+        2
+      ]
+    },
+    "terms": "On base fare, booked on Tuesdays."
+  },
+  {
+    "m": "Pearl-Continental Hotels",
+    "c": "travel",
+    "cities": [
+      "Karachi",
+      "Lahore",
+      "Islamabad",
+      "Rawalpindi",
+      "Peshawar"
+    ],
+    "banks": [
+      "scb"
+    ],
+    "types": [
+      "credit"
+    ],
+    "nets": [
+      "Visa",
+      "Mastercard"
+    ],
+    "offer": "25% off",
+    "pct": 25,
+    "sched": {
+      "t": "weekly",
+      "days": [
+        5,
+        6,
+        0
+      ]
+    },
+    "terms": "Dining at hotel restaurants over the weekend."
+  },
+  {
+    "m": "Serena Hotels",
+    "c": "travel",
+    "cities": [
+      "Islamabad",
+      "Peshawar",
+      "Quetta"
+    ],
+    "banks": [
+      "ubl"
+    ],
+    "types": [
+      "credit"
+    ],
+    "offer": "20% off",
+    "pct": 20,
+    "sched": {
+      "t": "weekly",
+      "days": [
+        6,
+        0
+      ]
+    },
+    "terms": "Restaurant and café bills."
+  },
+  {
+    "m": "Daewoo Express",
+    "c": "travel",
+    "cities": "all",
+    "banks": [
+      "faysal"
+    ],
+    "types": [
+      "debit"
+    ],
+    "offer": "10% off",
+    "pct": 10,
+    "sched": {
+      "t": "weekly",
+      "days": [
+        1
+      ]
+    },
+    "terms": "On online ticket bookings."
+  },
+  {
+    "m": "Careem",
+    "c": "travel",
+    "cities": [
+      "Karachi",
+      "Lahore",
+      "Islamabad",
+      "Rawalpindi",
+      "Faisalabad",
+      "Multan"
+    ],
+    "banks": [
+      "alfalah"
+    ],
+    "types": [
+      "credit",
+      "debit"
+    ],
+    "offer": "15% off rides",
+    "pct": 15,
+    "max": "Rs 300",
+    "sched": {
+      "t": "daily"
+    },
+    "terms": "First 2 rides each day."
+  },
+  {
+    "m": "Shell",
+    "c": "fuel",
+    "cities": "all",
+    "banks": [
+      "hbl"
+    ],
+    "types": [
+      "credit"
+    ],
+    "offer": "Rs 5/L off",
+    "pct": 3,
+    "max": "Rs 1,000 / month",
+    "sched": {
+      "t": "daily"
+    },
+    "terms": "On Shell V-Power and regular fuel."
+  },
+  {
+    "m": "PSO",
+    "c": "fuel",
+    "cities": "all",
+    "banks": [
+      "alfalah",
+      "ubl"
+    ],
+    "types": [
+      "credit",
+      "debit"
+    ],
+    "offer": "Rs 3/L off",
+    "pct": 2,
+    "sched": {
+      "t": "weekly",
+      "days": [
+        1,
+        4
+      ]
+    },
+    "terms": "Mondays and Thursdays."
+  },
+  {
+    "m": "Total Parco",
+    "c": "fuel",
+    "cities": "all",
+    "banks": [
+      "mcb"
+    ],
+    "types": [
+      "debit"
+    ],
+    "offer": "Rs 4/L off",
+    "pct": 2,
+    "sched": {
+      "t": "weekly",
+      "days": [
+        2
+      ]
+    },
+    "terms": "Tuesday fuel offer."
+  },
+  {
+    "m": "Attock Petroleum",
+    "c": "fuel",
+    "cities": "all",
+    "banks": [
+      "askari"
+    ],
+    "types": [
+      "credit",
+      "debit"
+    ],
+    "offer": "Rs 4/L off",
+    "pct": 2,
+    "sched": {
+      "t": "range",
+      "from": 0,
+      "to": 20
+    },
+    "terms": "Limited-time fuel offer."
+  },
+  {
+    "m": "Cinepax",
+    "c": "entertainment",
+    "cities": [
+      "Karachi",
+      "Lahore",
+      "Islamabad",
+      "Rawalpindi",
+      "Faisalabad",
+      "Multan",
+      "Peshawar"
+    ],
+    "banks": [
+      "ubl"
+    ],
+    "types": [
+      "credit",
+      "debit"
+    ],
+    "offer": "Buy 1 Get 1",
+    "pct": 50,
+    "sched": {
+      "t": "weekly",
+      "days": [
+        2
+      ]
+    },
+    "terms": "Tuesday tickets on selected shows."
+  },
+  {
+    "m": "Nueplex Cinemas",
+    "c": "entertainment",
+    "cities": [
+      "Karachi"
+    ],
+    "banks": [
+      "meezan"
+    ],
+    "types": [
+      "credit",
+      "debit"
+    ],
+    "offer": "30% off",
+    "pct": 30,
+    "sched": {
+      "t": "weekly",
+      "days": [
+        3
+      ]
+    },
+    "terms": "On movie tickets."
+  },
+  {
+    "m": "Sozo Water Park",
+    "c": "entertainment",
+    "cities": [
+      "Lahore"
+    ],
+    "banks": [
+      "bop"
+    ],
+    "types": [
+      "credit",
+      "debit"
+    ],
+    "offer": "20% off",
+    "pct": 20,
+    "sched": {
+      "t": "weekly",
+      "days": [
+        6
+      ]
+    },
+    "terms": "Entry tickets."
+  },
+  {
+    "m": "Chughtai Lab",
+    "c": "health",
+    "cities": [
+      "Lahore",
+      "Karachi",
+      "Islamabad",
+      "Rawalpindi",
+      "Faisalabad",
+      "Multan",
+      "Gujranwala"
+    ],
+    "banks": [
+      "hbl",
+      "ubl"
+    ],
+    "types": [
+      "credit",
+      "debit"
+    ],
+    "offer": "20% off tests",
+    "pct": 20,
+    "sched": {
+      "t": "daily"
+    },
+    "terms": "On selected lab tests. Home sampling excluded."
+  },
+  {
+    "m": "Excel Labs",
+    "c": "health",
+    "cities": [
+      "Karachi",
+      "Lahore"
+    ],
+    "banks": [
+      "bahl"
+    ],
+    "types": [
+      "credit",
+      "debit"
+    ],
+    "offer": "25% off tests",
+    "pct": 25,
+    "sched": {
+      "t": "range",
+      "from": 0,
+      "to": 30
+    },
+    "terms": "On pathology tests."
+  },
+  {
+    "m": "Dawaai",
+    "c": "health",
+    "cities": "all",
+    "banks": [
+      "hmb"
+    ],
+    "types": [
+      "credit",
+      "debit"
+    ],
+    "offer": "10% off",
+    "pct": 10,
+    "sched": {
+      "t": "daily"
+    },
+    "terms": "Online pharmacy orders."
+  },
+  {
+    "m": "Dvago",
+    "c": "health",
+    "cities": "all",
+    "banks": [
+      "alfalah"
+    ],
+    "types": [
+      "credit",
+      "debit"
+    ],
+    "offer": "15% off",
+    "pct": 15,
+    "max": "Rs 500",
+    "sched": {
+      "t": "daily"
+    },
+    "terms": "Online pharmacy orders."
+  },
+  {
+    "m": "Nabila",
+    "c": "beauty",
+    "cities": [
+      "Karachi",
+      "Lahore",
+      "Islamabad"
+    ],
+    "banks": [
+      "hbl"
+    ],
+    "types": [
+      "credit"
+    ],
+    "offer": "20% off",
+    "pct": 20,
+    "sched": {
+      "t": "weekly",
+      "days": [
+        1,
+        2
+      ]
+    },
+    "terms": "On salon services. Bridal excluded."
+  },
+  {
+    "m": "Depilex",
+    "c": "beauty",
+    "cities": [
+      "Karachi",
+      "Lahore",
+      "Islamabad",
+      "Faisalabad"
+    ],
+    "banks": [
+      "meezan"
+    ],
+    "types": [
+      "credit",
+      "debit"
+    ],
+    "offer": "15% off",
+    "pct": 15,
+    "sched": {
+      "t": "weekly",
+      "days": [
+        3
+      ]
+    },
+    "terms": "On selected services."
+  },
+  {
+    "m": "Jazz",
+    "c": "bills",
+    "cities": "all",
+    "banks": [
+      "js",
+      "soneri"
+    ],
+    "types": [
+      "debit"
+    ],
+    "offer": "5% cashback",
+    "pct": 5,
+    "max": "Rs 200",
+    "sched": {
+      "t": "range",
+      "from": 0,
+      "to": 14
+    },
+    "terms": "On bill payment and package purchase."
+  },
+  {
+    "m": "Zong 4G",
+    "c": "bills",
+    "cities": "all",
+    "banks": [
+      "bankislami"
+    ],
+    "types": [
+      "credit",
+      "debit"
+    ],
+    "offer": "8% cashback",
+    "pct": 8,
+    "sched": {
+      "t": "weekly",
+      "days": [
+        6
+      ]
+    },
+    "terms": "On bundles bought through the app."
+  },
+  {
+    "m": "Readings",
+    "c": "books",
+    "cities": [
+      "Karachi",
+      "Lahore",
+      "Islamabad"
+    ],
+    "banks": [
+      "ubl"
+    ],
+    "types": [
+      "credit",
+      "debit"
+    ],
+    "offer": "15% off",
+    "pct": 15,
+    "sched": {
+      "t": "weekly",
+      "days": [
+        6
+      ]
+    },
+    "terms": "On books; stationery excluded."
+  },
+  {
+    "m": "Liberty Books",
+    "c": "books",
+    "cities": [
+      "Karachi",
+      "Lahore",
+      "Islamabad"
+    ],
+    "banks": [
+      "bop"
+    ],
+    "types": [
+      "credit",
+      "debit"
+    ],
+    "offer": "10% off",
+    "pct": 10,
+    "sched": {
+      "t": "weekly",
+      "days": [
+        0
+      ]
+    },
+    "terms": "Sunday offer."
+  }
+]

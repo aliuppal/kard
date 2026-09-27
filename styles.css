@@ -81,6 +81,11 @@ select, input:not([type=checkbox]):not([type=radio]) {
 }
 .panel-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
 .panel-head h2 { font-size: 16px; }
+.head-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.auth:empty { display: none; }
+.auth .who { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--muted); }
+.auth .who img { width: 20px; height: 20px; border-radius: 50%; }
+.auth .btn svg { vertical-align: -3px; margin-right: 6px; }
 
 /* wallet */
 .wallet { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 4px; }

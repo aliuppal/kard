@@ -36,6 +36,31 @@
   const FAR = 36500; // "no start / no end" sentinel, in days
   let deals = [];
 
+  /* ---------- auth & cloud card sync ----------
+     Signed out: cards live in localStorage only (this device).
+     Signed in (Google): cards live in the `user_cards` table and follow the
+     account to any device, including the mobile app. */
+  const sb = (window.supabase && CFG.supabaseUrl && CFG.supabaseAnonKey)
+    ? window.supabase.createClient(CFG.supabaseUrl, CFG.supabaseAnonKey)
+    : null;
+  let session = null;
+  const fromCardRow = r => ({ id: r.id, bank: r.bank, type: r.card_type, network: r.network || '', name: r.nickname || '', last4: r.last4 || '' });
+  const toCardRow = c => ({ user_id: session.user.id, bank: c.bank, card_type: c.type, network: c.network || null, nickname: c.name || null, last4: c.last4 || null });
+
+  // Pulls this account's cards from the cloud. The first time an account with
+  // no saved cards signs in on a device that already has local guest cards,
+  // those are uploaded once so nothing is lost.
+  async function syncCardsFromRemote() {
+    if (!sb || !session) return;
+    const { data, error } = await sb.from('user_cards').select('*').order('id');
+    if (error) { console.warn('Kard: could not load your saved cards.', error); return; }
+    if (!data.length && state.cards.length) {
+      const { data: inserted, error: insErr } = await sb.from('user_cards').insert(state.cards.map(toCardRow)).select();
+      if (!insErr && inserted) { state.cards = inserted.map(fromCardRow); return; }
+    }
+    state.cards = data.map(fromCardRow);
+  }
+
   const parseDate = s => { const [y, m, d] = String(s).slice(0, 10).split('-').map(Number); return new Date(y, m - 1, d); };
 
   // Normalise a built-in sample deal (relative-day schedules) into the shape the UI uses.
@@ -135,7 +160,7 @@
   if (!Array.isArray(state.cards)) state.cards = [];
   state.cards = state.cards.filter(c => c && BANK[c.bank] && (c.type === 'credit' || c.type === 'debit'));
 
-  const saveCards = () => store.set('cards', state.cards);
+  const saveCards = () => store.set('cards', state.cards); // guest (signed-out) cache only
 
   /* ---------- filtering ---------- */
   function matchCards(d) {
@@ -307,10 +332,23 @@
   }
 
   /* ---------- rendering: chrome ---------- */
+  function renderAuth() {
+    const el = $('#auth');
+    if (!sb) { el.innerHTML = ''; return; }
+    if (session) {
+      const u = session.user, name = u.user_metadata && (u.user_metadata.full_name || u.user_metadata.name);
+      const avatar = u.user_metadata && u.user_metadata.avatar_url;
+      el.innerHTML = `<span class="who">${avatar ? `<img src="${esc(avatar)}" alt="" referrerpolicy="no-referrer">` : ''}Synced as ${esc(name || u.email)}</span>
+        <button class="btn sm" data-act="sign-out">Sign out</button>`;
+    } else {
+      el.innerHTML = `<button class="btn sm" data-act="sign-in-google"><svg viewBox="0 0 18 18" width="15" height="15" aria-hidden="true"><path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.9c1.7-1.57 2.7-3.88 2.7-6.62z"/><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.9-2.26c-.8.54-1.84.86-3.06.86-2.35 0-4.34-1.59-5.05-3.72H.9v2.33A9 9 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.95 10.7A5.4 5.4 0 0 1 3.67 9c0-.59.1-1.17.28-1.7V4.97H.9A9 9 0 0 0 0 9c0 1.45.35 2.83.9 4.03l3.05-2.33z"/><path fill="#EA4335" d="M9 3.58c1.32 0 2.51.45 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0A9 9 0 0 0 .9 4.97L3.95 7.3C4.66 5.17 6.65 3.58 9 3.58z"/></svg>Sign in with Google</button>`;
+    }
+  }
+
   function renderWallet() {
     const w = $('#wallet');
     if (!state.cards.length) {
-      w.innerHTML = `<div class="empty-wallet"><span>Add your debit and credit cards to see only the deals you can actually use.</span>
+      w.innerHTML = `<div class="empty-wallet"><span>Add your debit and credit cards to see only the deals you can actually use.${sb && !session ? ' Sign in with Google (above) to sync them across devices.' : ''}</span>
         <button class="btn primary sm" data-act="add-card">＋ Add a card</button>
         <button class="btn sm" data-act="demo-cards">Try with sample cards</button></div>`;
       return;
@@ -340,7 +378,7 @@
     $('#view').innerHTML = { daily: viewDaily, weekly: viewWeekly, monthly: viewMonthly }[state.view]();
   }
 
-  function render() { renderWallet(); renderFilters(); renderView(); }
+  function render() { renderAuth(); renderWallet(); renderFilters(); renderView(); }
 
   /* ---------- controls ---------- */
   function initControls() {
@@ -357,25 +395,35 @@
     $('#mine').addEventListener('change', e => { state.mine = e.target.checked; store.set('mine', state.mine); renderView(); });
 
     const dlg = $('#card-dialog'), form = $('#card-form');
-    form.addEventListener('submit', e => {
+    form.addEventListener('submit', async e => {
       e.preventDefault();
       const fd = new FormData(form);
       const last4 = String(fd.get('last4') || '').trim();
-      state.cards.push({
+      const card = {
         id: Date.now(),
         bank: fd.get('bank'),
         type: fd.get('type'),
         network: fd.get('network'),
         name: String(fd.get('name') || '').trim().slice(0, 30),
         last4: /^\d{4}$/.test(last4) ? last4 : ''
-      });
-      saveCards();
+      };
+      const btn = form.querySelector('button[type=submit]');
+      btn.disabled = true;
+      if (sb && session) {
+        const { data, error } = await sb.from('user_cards').insert(toCardRow(card)).select();
+        if (error) { alert('Could not save this card: ' + error.message); btn.disabled = false; return; }
+        state.cards.push(fromCardRow(data[0]));
+      } else {
+        state.cards.push(card);
+        saveCards();
+      }
+      btn.disabled = false;
       form.reset();
       dlg.close();
       render();
     });
 
-    document.addEventListener('click', e => {
+    document.addEventListener('click', async e => {
       const t = e.target.closest('[data-act]');
       if (!t) return;
       const a = t.dataset.act;
@@ -383,15 +431,36 @@
       switch (a) {
         case 'add-card': dlg.showModal(); break;
         case 'cancel-card': form.reset(); dlg.close(); break;
-        case 'demo-cards':
-          state.cards.push(
+        case 'demo-cards': {
+          const demo = [
             { id: Date.now(), bank: 'hbl', type: 'credit', network: 'Visa', name: 'Platinum', last4: '' },
             { id: Date.now() + 1, bank: 'ubl', type: 'debit', network: 'Mastercard', name: '', last4: '' },
-            { id: Date.now() + 2, bank: 'meezan', type: 'debit', network: 'PayPak', name: '', last4: '' });
-          saveCards(); render(); break;
+            { id: Date.now() + 2, bank: 'meezan', type: 'debit', network: 'PayPak', name: '', last4: '' }
+          ];
+          if (sb && session) {
+            const { data, error } = await sb.from('user_cards').insert(demo.map(toCardRow)).select();
+            if (error) { alert('Could not add sample cards: ' + error.message); break; }
+            state.cards.push(...data.map(fromCardRow));
+          } else {
+            state.cards.push(...demo);
+            saveCards();
+          }
+          render(); break;
+        }
         case 'del-card':
+          if (sb && session) {
+            const { error } = await sb.from('user_cards').delete().eq('id', t.dataset.id);
+            if (error) { alert('Could not remove this card: ' + error.message); break; }
+          }
           state.cards = state.cards.filter(c => String(c.id) !== t.dataset.id);
-          saveCards(); render(); break;
+          if (!(sb && session)) saveCards();
+          render(); break;
+        case 'sign-in-google':
+          if (sb) sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.origin + window.location.pathname } });
+          break;
+        case 'sign-out':
+          if (sb) await sb.auth.signOut();
+          break;
         case 'view': state.view = t.dataset.v; store.set('view', state.view); renderView(); break;
         case 'cat': state.cat = t.dataset.id; store.set('cat', state.cat); renderFilters(); renderView(); break;
         case 'clear':
@@ -416,6 +485,7 @@
   }
 
   initControls();
+  renderAuth();
   renderWallet();
   renderFilters();
   $('#view').innerHTML = '<div class="empty"><p>Loading deals…</p></div>';
@@ -424,4 +494,18 @@
     renderNotice(source);
     renderView();
   });
+
+  if (sb) {
+    sb.auth.getSession().then(({ data }) => {
+      session = data.session;
+      if (!session) { renderAuth(); return; }
+      syncCardsFromRemote().then(render);
+    });
+    sb.auth.onAuthStateChange((event, sess) => {
+      if (event === 'INITIAL_SESSION') return; // handled by getSession() above
+      session = sess;
+      if (event === 'SIGNED_IN') syncCardsFromRemote().then(render);
+      else if (event === 'SIGNED_OUT') { state.cards = store.get('cards', []); render(); }
+    });
+  }
 })();

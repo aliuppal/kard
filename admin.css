@@ -10,6 +10,10 @@ a.btn { display: inline-block; text-decoration: none; }
 .card-box code { padding: 1px 5px; }
 .card-box pre { padding: 10px; overflow-x: auto; margin: 0; white-space: pre-wrap; word-break: break-all; }
 .form-err { color: #c0392b; font-size: 13.5px; min-height: 1.2em; margin: 0; }
+.google-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 10px; }
+.google-btn svg { flex: 0 0 auto; }
+.or { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 12px; }
+.or::before, .or::after { content: ""; flex: 1; height: 1px; background: var(--line); }
 @media (prefers-color-scheme: dark) { .form-err { color: #ff8a7a; } }
 
 .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 16px 0 14px; }
