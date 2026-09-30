@@ -140,6 +140,12 @@ window.CARD_PRODUCTS = [
   { id: 'bi-classic-dc',  bank: 'bankislami', name: 'BankIslami Mastercard Classic Debit Card',  type: 'debit', nets: ['Mastercard'], tier: 'classic',  img: true },
   { id: 'bi-paypak-dc',   bank: 'bankislami', name: 'BankIslami PayPak Debit Card',              type: 'debit', nets: ['PayPak'],     tier: 'classic',  img: true },
   // Bank of Punjab
+  { id: 'bop-world-cc',     bank: 'bop', name: 'BOP Mastercard World Credit Card',     type: 'credit', nets: ['Mastercard'], tier: 'world' },
+  { id: 'bop-platinum-cc',  bank: 'bop', name: 'BOP Mastercard Platinum Credit Card',  type: 'credit', nets: ['Mastercard'], tier: 'platinum' },
+  { id: 'bop-gold-cc',      bank: 'bop', name: 'BOP Mastercard Gold Credit Card',      type: 'credit', nets: ['Mastercard'], tier: 'gold' },
+  { id: 'bop-green-cc',     bank: 'bop', name: 'BOP Green Credit Card',                type: 'credit', nets: ['Mastercard'], tier: 'classic' },
+  { id: 'bop-exec-cc',      bank: 'bop', name: 'BOP Executive Business Credit Card',   type: 'credit', nets: ['Mastercard'], tier: 'platinum' },
+  { id: 'bop-qalandar-cc',  bank: 'bop', name: 'BOP Lahore Qalandars Business Credit Card', type: 'credit', nets: ['Mastercard'], tier: 'classic' },
   { id: 'bop-platinum-dc', bank: 'bop', name: 'BOP Mastercard Platinum Debit Card', type: 'debit', nets: ['Mastercard'], tier: 'platinum' },
   { id: 'bop-gold-dc',     bank: 'bop', name: 'BOP Mastercard Gold Debit Card',     type: 'debit', nets: ['Mastercard'], tier: 'gold' },
   { id: 'bop-classic-dc',  bank: 'bop', name: 'BOP Mastercard Classic Debit Card',  type: 'debit', nets: ['Mastercard'], tier: 'classic' },
