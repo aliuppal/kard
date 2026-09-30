@@ -341,15 +341,53 @@ input:user-invalid { border-color: var(--danger) !important; }
 .deal details p { margin-top: 6px; max-width: 60ch; }
 
 /* ---------- weekly ---------- */
-.week { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 16px; align-items: start; }
-.day-col { background: var(--sunk); border-radius: var(--r-lg); padding: 12px; }
-.day-col.today { background: color-mix(in srgb, var(--brand-soft) 70%, var(--sunk)); }
-.day-col > h3 { font-size: 15px; font-weight: 700; display: flex; justify-content: space-between; align-items: baseline; margin: 2px 4px 10px; }
-.day-col > h3 small { color: var(--muted); font-family: var(--font-mono); font-size: 12px; font-weight: 500; }
-.day-col .deal { margin-bottom: 10px; box-shadow: var(--shadow-sm); }
-.day-col .deal:last-child { margin-bottom: 0; }
-.day-col .deal .offer b { font-size: 32px; }
-.day-col > p { padding: 4px; }
+/* week strip: 7 day tiles; bar length = share of the week's busiest day */
+.wstrip { position: relative; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; margin-bottom: 8px; }
+.wday {
+  position: relative; overflow: hidden; font: inherit; color: var(--ink); cursor: pointer; text-align: left;
+  display: flex; flex-direction: column; gap: 1px; padding: 12px 12px 16px; min-height: 118px;
+  background: var(--surface); border: 1px solid transparent; border-radius: var(--r); box-shadow: var(--shadow-sm);
+  transition: transform .15s var(--ease), border-color .2s var(--ease), background-color .2s var(--ease);
+}
+.wday:hover { border-color: var(--line-strong); }
+.wday:active { transform: scale(.97); }
+.wday .wd { font-family: var(--font-mono); font-size: 11.5px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.wday .wn { font-family: var(--font-display); font-size: 30px; font-weight: 800; line-height: 1; letter-spacing: -.04em; margin: 2px 0 6px; font-variant-numeric: tabular-nums; }
+.wday .wc { font-size: 12.5px; font-weight: 600; color: var(--ink-2); }
+.wday .wb { font-size: 12px; color: var(--brand-text); font-weight: 600; }
+.wday .wbar { position: absolute; left: 0; right: 0; bottom: 0; height: 5px; background: var(--sunk); }
+.wday .wbar::after {
+  content: ""; position: absolute; left: 0; bottom: 0; top: 0; width: calc(var(--h) * 100%);
+  background: color-mix(in srgb, var(--brand) 70%, transparent); border-radius: 0 3px 3px 0;
+  transition: width .4s var(--ease);
+}
+.wday.past { opacity: .55; }
+.wday.today::before { content: ""; position: absolute; top: 12px; right: 12px; width: 8px; height: 8px; border-radius: 50%; background: var(--brand); }
+.wday.on { background: var(--ink); color: var(--on-ink); border-color: var(--ink); opacity: 1; }
+.wday.on .wd, .wday.on .wc { color: color-mix(in srgb, var(--on-ink) 72%, transparent); }
+.wday.on .wb { color: color-mix(in srgb, var(--brand) 55%, var(--on-ink)); }
+.wday.on .wbar { background: color-mix(in srgb, var(--on-ink) 14%, transparent); }
+.empty.slim { padding: 22px 18px; }
+
+/* every-day offers: compact rows that expand into the full card */
+.drows { display: flex; flex-direction: column; background: var(--surface); border-radius: var(--r-lg); box-shadow: var(--shadow-sm); overflow: hidden; }
+.drow + .drow { border-top: 1px solid var(--line); }
+.drow summary {
+  list-style: none; cursor: pointer; display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; align-items: center; gap: 12px;
+  padding: 11px 16px; transition: background-color .15s var(--ease);
+}
+.drow summary::-webkit-details-marker { display: none; }
+.drow summary::after { content: "+"; font-family: var(--font-mono); color: var(--muted); transition: transform .2s var(--ease); }
+.drow[open] summary::after { transform: rotate(45deg); }
+.drow summary:hover { background: color-mix(in srgb, var(--sunk) 55%, transparent); }
+.drow .avatar { width: 34px; height: 34px; border-radius: 10px; }
+.drow-m { display: flex; flex-direction: column; min-width: 0; }
+.drow-m b { font-size: 14.5px; font-weight: 650; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.drow-m small { font-size: 12.5px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.drow-o { font-family: var(--font-display); font-weight: 800; font-size: 17px; letter-spacing: -.02em; color: var(--brand-text); white-space: nowrap; }
+.drow.match .drow-m b::after { content: " ✓"; color: var(--brand-text); font-weight: 700; }
+.drow > .deal { margin: 0 12px 12px; box-shadow: none; background: var(--bg); animation: none; }
+.drow > .deal:hover { transform: none; }
 
 /* ---------- monthly ---------- */
 .cal-head, .cal { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; }
@@ -437,7 +475,13 @@ dialog h2 { font-size: 24px; font-weight: 750; margin-bottom: 4px; }
   .cell .n { align-self: center; }
   .cell .count { margin-top: 0; }
   .cell .count:not(:empty)::after { content: none; }
-  .grid, .week { grid-template-columns: 1fr; }
+  .grid { grid-template-columns: 1fr; }
+  .wstrip { grid-template-columns: repeat(7, 76px); overflow-x: auto; scroll-snap-type: x mandatory; margin: 0 -16px 8px; padding: 2px 16px 6px; scrollbar-width: none; }
+  .wstrip::-webkit-scrollbar { display: none; }
+  .wday { scroll-snap-align: start; min-height: 104px; padding: 10px 10px 14px; }
+  .wday .wn { font-size: 26px; }
+  .wday .wb { display: none; }
+  .drow summary { padding: 10px 12px; gap: 10px; }
   .card { width: 212px; }
   .two { grid-template-columns: 1fr; }
 }

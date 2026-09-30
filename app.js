@@ -159,7 +159,8 @@
     bank: 'all',
     sort: 'best',
     q: '',
-    anchor: today
+    anchor: today,
+    wIdx: null // selected day in the weekly view (0 = Monday); null = today / Monday
   };
   if (!['daily', 'weekly', 'monthly'].includes(state.view)) state.view = 'daily';
   if (state.city !== 'all' && !CITIES.includes(state.city)) state.city = 'all';
@@ -286,6 +287,21 @@
 
   const mondayOf = d => addDays(d, -((d.getDay() + 6) % 7));
 
+  // Compact, expandable row — used for the "every day" offers under the week strip.
+  function dealRow(d) {
+    const cat = catOf(d.c);
+    const banks = d.banks.map(id => BANK[id].short);
+    const who = banks.slice(0, 3).join(', ') + (banks.length > 3 ? ' +' + (banks.length - 3) : '');
+    return `<details class="drow${matchCards(d).length ? ' match' : ''}" style="--cc:${cat.color}">
+      <summary>
+        <span class="avatar">${ICON(cat.id, 17)}</span>
+        <span class="drow-m"><b>${esc(d.m)}</b><small>${esc(cat.name)} · ${esc(who)}</small></span>
+        <span class="drow-o">${esc(d.offer)}</span>
+      </summary>
+      ${dealCard(d)}
+    </details>`;
+  }
+
   function viewWeekly() {
     const start = mondayOf(state.anchor);
     const days = Array.from({ length: 7 }, (_, i) => addDays(start, i));
@@ -293,19 +309,34 @@
     const perDay = days.map(d => base.filter(x => x.sched.t !== 'daily' && occursOn(x, d)));
     const every = base.filter(x => x.sched.t === 'daily' && days.some(d => occursOn(x, d)));
     const total = new Set(perDay.flat().concat(every).map(d => d.id)).size;
-    const title = `${fmt(days[0])} – ${fmt(days[6])}` + (days.some(d => sameDay(d, today)) ? ' · This week' : '');
+    const todayIdx = days.findIndex(d => sameDay(d, today));
+    const sel = state.wIdx != null ? state.wIdx : Math.max(0, todayIdx);
+    const title = `${fmt(days[0])} – ${fmt(days[6])}` + (todayIdx >= 0 ? ' · This week' : '');
     let html = navHead(title, summary(total, 'this week'), 'prev-week', 'next-week', 'This week');
     if (!total) return html + emptyState('No deals match this week. Try another week or loosen the filters.');
-    if (every.length) html += `<h3 class="section-h">Every day this week <small>${every.length}</small></h3>` + grid(every);
-    html += '<h3 class="section-h">Day by day</h3><div class="week">' + days.map((d, i) => {
+
+    const peak = Math.max(1, ...perDay.map(a => a.length));
+    html += '<div class="wstrip" role="tablist" aria-label="Day of the week">' + days.map((d, i) => {
       const items = perDay[i];
-      return `<section class="day-col${sameDay(d, today) ? ' today' : ''}">
-        <h3>${DAY_FULL[d.getDay()]} <small>${fmt(d)} · ${items.length}</small></h3>
-        ${items.length ? items.map(dealCard).join('') : '<p class="muted small">No day-specific deals.</p>'}
-      </section>`;
+      const best = items.reduce((m, x) => Math.max(m, x.pct || 0), 0);
+      const past = d < today;
+      return `<button role="tab" class="wday${i === sel ? ' on' : ''}${i === todayIdx ? ' today' : ''}${past ? ' past' : ''}" data-act="wday" data-i="${i}" aria-selected="${i === sel}" aria-label="${fmtLong(d)}: ${plural(items.length, 'deal')}">
+        <span class="wd">${DAY[d.getDay()]}</span>
+        <span class="wn">${d.getDate()}</span>
+        <span class="wc">${items.length ? plural(items.length, 'deal') : 'No extras'}</span>
+        <span class="wb">${best ? 'up to ' + best + '%' : '&nbsp;'}</span>
+        <span class="wbar" style="--h:${items.length / peak}"></span>
+      </button>`;
     }).join('') + '</div>';
+
+    const d = days[sel], items = perDay[sel];
+    const label = i => i === todayIdx ? 'Today' : DAY_FULL[days[i].getDay()];
+    html += `<h3 class="section-h">${label(sel)} only · ${fmt(d)} <small>${items.length}</small></h3>`;
+    html += items.length ? grid(items) : `<div class="empty slim"><p>No day-specific offers on ${DAY_FULL[d.getDay()]}. The every-day offers below still apply.</p></div>`;
+    if (every.length) html += `<h3 class="section-h">Every day this week <small>${every.length}</small></h3><div class="drows">${every.map(dealRow).join('')}</div>`;
     return html;
   }
+
 
   function viewMonthly() {
     const y = state.anchor.getFullYear(), m = state.anchor.getMonth();
@@ -401,6 +432,9 @@
   function renderView() {
     document.querySelectorAll('.tabs button').forEach(b => b.setAttribute('aria-selected', String(b.dataset.v === state.view)));
     $('#view').innerHTML = { daily: viewDaily, weekly: viewWeekly, monthly: viewMonthly }[state.view]();
+    // on narrow screens the week strip scrolls; bring the selected day into view without moving the page
+    const strip = $('.wstrip'), on = strip && strip.querySelector('.wday.on');
+    if (on && strip.scrollWidth > strip.clientWidth) strip.scrollLeft = on.offsetLeft - (strip.clientWidth - on.offsetWidth) / 2;
   }
 
   function render() { renderAuth(); renderWallet(); renderFilters(); renderView(); }
@@ -525,6 +559,7 @@
         case 'prev-day': state.anchor = addDays(A, -1); renderView(); break;
         case 'next-day': state.anchor = addDays(A, 1); renderView(); break;
         case 'prev-week': state.anchor = addDays(A, -7); renderView(); break;
+        case 'wday': state.wIdx = +t.dataset.i; renderView(); break;
         case 'next-week': state.anchor = addDays(A, 7); renderView(); break;
         case 'prev-month': case 'next-month': {
           const off = a === 'prev-month' ? -1 : 1;
@@ -532,7 +567,7 @@
           state.anchor = new Date(A.getFullYear(), A.getMonth() + off, Math.min(A.getDate(), last));
           renderView(); break;
         }
-        case 'today': state.anchor = today; renderView(); break;
+        case 'today': state.anchor = today; state.wIdx = null; renderView(); break;
         case 'pick': state.anchor = new Date(A.getFullYear(), A.getMonth(), +t.dataset.d); renderView(); break;
       }
     });
