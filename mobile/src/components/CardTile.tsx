@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
   },
   sheen: { position: 'absolute', top: -80, right: -60, width: 220, height: 220, borderRadius: 110, backgroundColor: 'rgba(255,255,255,0.14)' },
   shade: { position: 'absolute', bottom: -90, left: -50, width: 240, height: 200, borderRadius: 120, backgroundColor: 'rgba(0,0,0,0.22)' },
-  x: { position: 'absolute', top: 12, right: 12, width: 26, height: 26, borderRadius: 13, backgroundColor: 'rgba(0,0,0,0.25)', alignItems: 'center', justifyContent: 'center', zIndex: 1 },
+  x: { position: 'absolute', top: 12, right: 12, width: 26, height: 26, borderRadius: 13, backgroundColor: 'rgba(0,0,0,0.25)', alignItems: 'center', justifyContent: 'center', zIndex: 2, elevation: 6 },
   topRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', paddingRight: 34, gap: 8 },
   bankName: { color: '#fff', fontSize: 18, fontWeight: '800', letterSpacing: -0.3 },
   type: { color: 'rgba(255,255,255,0.85)', fontSize: 10.5, fontWeight: '700', letterSpacing: 1, paddingTop: 4 },
