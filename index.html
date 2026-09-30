@@ -107,35 +107,36 @@
     <form id="card-form" autocomplete="off">
       <div class="dlg-head">
         <h2>Add a card</h2>
-        <p class="muted small">We only need the bank and card type to match offers. Don't enter the card number.</p>
+        <p class="muted small">Pick the card you carry so we can match its offers. Never enter the card number.</p>
       </div>
 
+      <div id="f-preview" class="card-preview" aria-hidden="true"></div>
+
       <label class="field">
-        <span>Bank</span>
+        <span>Bank or wallet</span>
         <select name="bank" id="f-bank" required></select>
       </label>
 
-      <fieldset class="seg">
+      <label class="field">
+        <span>Card</span>
+        <select name="product" id="f-product"></select>
+      </label>
+
+      <fieldset class="seg" id="f-type">
         <legend>Card type</legend>
         <label><input type="radio" name="type" value="credit" checked><span>Credit</span></label>
         <label><input type="radio" name="type" value="debit"><span>Debit</span></label>
       </fieldset>
 
-      <label class="field">
+      <label class="field" id="f-net-wrap">
         <span>Network</span>
-        <select name="network">
-          <option>Visa</option>
-          <option>Mastercard</option>
-          <option>UnionPay</option>
-          <option>PayPak</option>
-          <option>Other</option>
-        </select>
+        <select name="network" id="f-net"></select>
       </label>
 
       <div class="two">
         <label class="field">
-          <span>Card name <em>(optional)</em></span>
-          <input name="name" maxlength="30" placeholder="e.g. Platinum">
+          <span>Nickname <em>(optional)</em></span>
+          <input name="name" maxlength="30" placeholder="e.g. Salary card">
         </label>
         <label class="field">
           <span>Last 4 digits <em>(optional)</em></span>
@@ -155,6 +156,7 @@
   <script src="catalog.js"></script>
   <script src="icons.js"></script>
   <script src="sample-deals.js"></script>
+  <script src="deals.js"></script>
   <script src="config.js"></script>
   <script src="app.js"></script>
 </body>

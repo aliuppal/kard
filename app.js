@@ -30,6 +30,9 @@
   /* ---------- data ---------- */
   const BANK = Object.fromEntries(BANKS.map(b => [b.id, b]));
   const CAT = Object.fromEntries(CATEGORIES.map(c => [c.id, c]));
+  const PRODUCTS = window.CARD_PRODUCTS || [];
+  const PRODUCT = Object.fromEntries(PRODUCTS.map(p => [p.id, p]));
+  const productsOf = bank => PRODUCTS.filter(p => p.bank === bank);
 
   const catOf = id => CAT[id] || { id, name: id, icon: '🏷️', color: '#6b6358' };
   const ICON = (name, size) => window.KARD_ICON ? window.KARD_ICON(name, size) : '';
@@ -45,8 +48,8 @@
     ? window.supabase.createClient(CFG.supabaseUrl, CFG.supabaseAnonKey)
     : null;
   let session = null;
-  const fromCardRow = r => ({ id: r.id, bank: r.bank, type: r.card_type, network: r.network || '', name: r.nickname || '', last4: r.last4 || '' });
-  const toCardRow = c => ({ user_id: session.user.id, bank: c.bank, card_type: c.type, network: c.network || null, nickname: c.name || null, last4: c.last4 || null });
+  const fromCardRow = r => ({ id: r.id, bank: r.bank, product: r.product || '', type: r.card_type, network: r.network || '', name: r.nickname || '', last4: r.last4 || '' });
+  const toCardRow = c => ({ user_id: session.user.id, bank: c.bank, product: c.product || null, card_type: c.type, network: c.network || null, nickname: c.name || null, last4: c.last4 || null });
 
   // Pulls this account's cards from the cloud. The first time an account with
   // no saved cards signs in on a device that already has local guest cards,
@@ -94,14 +97,16 @@
       from: r.start_date ? parseDate(r.start_date) : addDays(today, -FAR),
       until: r.end_date ? parseDate(r.end_date) : addDays(today, FAR),
       hasEnd: !!r.end_date,
-      terms: r.terms
+      terms: r.terms,
+      src: r.source_url || ''
     };
   }
 
   // Load deals from Supabase when configured, otherwise (or on failure) use the built-in samples.
   async function loadDeals() {
     const sample = () => (window.RAW_DEALS || []).map(fromSample);
-    if (!CFG.supabaseUrl || !CFG.supabaseAnonKey) return { source: 'sample', deals: sample() };
+    const real = () => (window.REAL_DEALS || []).map(fromRow).filter(d => d.banks.length);
+    if (!CFG.supabaseUrl || !CFG.supabaseAnonKey) return window.REAL_DEALS ? { source: 'real', deals: real() } : { source: 'sample', deals: sample() };
     try {
       const res = await fetch(CFG.supabaseUrl.replace(/\/$/, '') + '/rest/v1/deals?select=*&active=eq.true&order=id', {
         headers: { apikey: CFG.supabaseAnonKey, Authorization: 'Bearer ' + CFG.supabaseAnonKey }
@@ -111,13 +116,14 @@
       return { source: 'db', deals: rows.map(fromRow).filter(d => d.banks.length) };
     } catch (err) {
       console.warn('Kard: could not load deals from Supabase, using sample data.', err);
-      return { source: 'fallback', deals: sample() };
+      return window.REAL_DEALS ? { source: 'real', deals: real() } : { source: 'fallback', deals: sample() };
     }
   }
 
   function renderNotice(source) {
     const el = $('#notice');
     const msg = {
+      real: window.REAL_DEALS_ASOF ? `<strong>Offers collected ${esc(window.REAL_DEALS_ASOF)}</strong> from the banks' published card discounts. They change often, so confirm with the merchant before paying.` : '',
       sample: '<strong>Sample data.</strong> The database isn\'t connected, so these are built-in placeholder offers, not live bank deals.',
       fallback: '<strong>Couldn\'t reach the database</strong> — showing built-in sample offers instead. Please try again later.',
       db: CFG.sampleNotice ? '<strong>Sample data.</strong> The offers shown are illustrative placeholders, not live bank deals. Always confirm the offer with the bank or merchant before paying.' : ''
@@ -236,7 +242,7 @@
         ${limits ? `<li>${ICON('coins', 15)}${esc(limits)}</li>` : ''}
       </ul>
       <div class="tags">${bankChips}<span class="tag">${types}${d.nets ? ' · ' + esc(d.nets.join('/')) + ' only' : ''}</span>${timing}</div>
-      <details><summary>Terms</summary><p>${esc(d.terms || 'See merchant for details.')}</p></details>
+      <details><summary>Terms</summary><p>${esc(d.terms || 'See merchant for details.')}</p>${d.src ? `<p><a href="${esc(d.src)}" target="_blank" rel="noopener">Offer source</a></p>` : ''}</details>
     </article>`;
   }
 
@@ -352,6 +358,9 @@
     }
   }
 
+  // "Meezan Visa Platinum Debit Card" → "Meezan Visa Platinum" for the small card face
+  const shortName = p => p.name.replace(/\s*(Credit|Debit)\s*Card$/i, '').replace(/(Credit|Debit)Card$/, '').trim();
+
   function renderWallet() {
     const w = $('#wallet');
     if (!state.cards.length) {
@@ -362,9 +371,17 @@
     }
     w.innerHTML = state.cards.map(c => {
       const b = BANK[c.bank];
-      return `<div class="card" style="--bc:${b.color}">
+      const p = PRODUCT[c.product];
+      if (p && p.img) {
+        return `<figure class="card photo" title="${esc(p.name)}">
+        <button class="x" data-act="del-card" data-id="${c.id}" aria-label="Remove ${esc(p.name)}">${ICON('x', 14)}</button>
+        <img src="cards/${p.id}.webp" alt="${esc(p.name)}" loading="lazy">
+        <figcaption><b>${esc(c.name || p.name)}</b><span>${c.last4 ? '•••• ' + esc(c.last4) + ' · ' : ''}${esc(c.network || p.nets[0])}</span></figcaption>
+      </figure>`;
+      }
+      return `<div class="card tier-${p ? p.tier : 'classic'}" style="--bc:${b.color}">
         <button class="x" data-act="del-card" data-id="${c.id}" aria-label="Remove ${esc(b.name)} card">${ICON('x', 14)}</button>
-        <div class="card-top"><b>${esc(b.name)}</b><span class="type">${c.type === 'credit' ? 'Credit' : 'Debit'}</span></div>
+        <div class="card-top"><b>${esc(p ? shortName(p) : b.name)}</b><span class="type">${c.type === 'credit' ? 'Credit' : 'Debit'}</span></div>
         <span class="chip-ic" aria-hidden="true"></span>
         <div class="meta"><span class="num">${c.last4 ? '•••• ' + esc(c.last4) : esc(c.name || '')}</span><span class="net">${esc(c.network || '')}</span></div>
         ${c.name && c.last4 ? `<span class="nick">${esc(c.name)}</span>` : ''}
@@ -391,8 +408,10 @@
   /* ---------- controls ---------- */
   function initControls() {
     $('#city').innerHTML = '<option value="all">All cities</option>' + CITIES.map(c => `<option>${c}</option>`).join('');
-    $('#bank').innerHTML = '<option value="all">All banks</option>' + BANKS.map(b => `<option value="${b.id}">${esc(b.name)}</option>`).join('');
-    $('#f-bank').innerHTML = BANKS.map(b => `<option value="${b.id}">${esc(b.name)}</option>`).join('');
+    const opts = arr => arr.map(b => `<option value="${b.id}">${esc(b.name)}</option>`).join('');
+    const grouped = `<optgroup label="Banks">${opts(BANKS.filter(b => !b.wallet))}</optgroup><optgroup label="Wallets">${opts(BANKS.filter(b => b.wallet))}</optgroup>`;
+    $('#bank').innerHTML = '<option value="all">All banks &amp; wallets</option>' + grouped;
+    $('#f-bank').innerHTML = grouped;
     $('#city').value = state.city;
 
     $('#city').addEventListener('change', e => { state.city = e.target.value; store.set('city', state.city); renderView(); });
@@ -403,6 +422,31 @@
     $('#mine').addEventListener('change', e => { state.mine = e.target.checked; store.set('mine', state.mine); renderView(); });
 
     const dlg = $('#card-dialog'), form = $('#card-form');
+    const NETS = ['Visa', 'Mastercard', 'UnionPay', 'PayPak', 'Amex', 'Other'];
+    const fBank = $('#f-bank'), fProduct = $('#f-product'), fNet = $('#f-net');
+    // Picking a listed card fixes its type and network; "Other" lets people set them by hand.
+    function syncCardForm(fromBank) {
+      if (fromBank) {
+        fProduct.innerHTML = productsOf(fBank.value).map(p => `<option value="${p.id}">${esc(p.name)}</option>`).join('') + '<option value="">Other / not listed</option>';
+      }
+      const p = PRODUCT[fProduct.value];
+      const nets = p ? p.nets : NETS;
+      const keep = fNet.value;
+      fNet.innerHTML = nets.map(n => `<option>${n}</option>`).join('');
+      if (nets.includes(keep)) fNet.value = keep;
+      $('#f-net-wrap').hidden = !!p && nets.length < 2;
+      $('#f-type').hidden = !!p;
+      if (p) form.elements.type.value = p.type;
+      const b = BANK[fBank.value];
+      $('#f-preview').innerHTML = p && p.img
+        ? `<img src="cards/${p.id}.webp" alt="">`
+        : `<div class="card tier-${p ? p.tier : 'classic'}" style="--bc:${b.color}"><div class="card-top"><b>${esc(p ? shortName(p) : b.name)}</b></div><span class="chip-ic"></span><div class="meta"><span class="num">•••• 0000</span><span class="net">${esc(fNet.value)}</span></div></div>`;
+    }
+    fBank.addEventListener('change', () => syncCardForm(true));
+    fProduct.addEventListener('change', () => syncCardForm(false));
+    fNet.addEventListener('change', () => syncCardForm(false));
+    const openCardDialog = () => { form.reset(); syncCardForm(true); dlg.showModal(); };
+
     form.addEventListener('submit', async e => {
       e.preventDefault();
       const fd = new FormData(form);
@@ -410,7 +454,8 @@
       const card = {
         id: Date.now(),
         bank: fd.get('bank'),
-        type: fd.get('type'),
+        product: fd.get('product') || '',
+        type: PRODUCT[fd.get('product')] ? PRODUCT[fd.get('product')].type : fd.get('type'),
         network: fd.get('network'),
         name: String(fd.get('name') || '').trim().slice(0, 30),
         last4: /^\d{4}$/.test(last4) ? last4 : ''
@@ -437,13 +482,14 @@
       const a = t.dataset.act;
       const A = state.anchor;
       switch (a) {
-        case 'add-card': dlg.showModal(); break;
+        case 'add-card': openCardDialog(); break;
         case 'cancel-card': form.reset(); dlg.close(); break;
         case 'demo-cards': {
           const demo = [
-            { id: Date.now(), bank: 'hbl', type: 'credit', network: 'Visa', name: 'Platinum', last4: '' },
-            { id: Date.now() + 1, bank: 'ubl', type: 'debit', network: 'Mastercard', name: '', last4: '' },
-            { id: Date.now() + 2, bank: 'meezan', type: 'debit', network: 'PayPak', name: '', last4: '' }
+            { id: Date.now(), bank: 'hbl', product: 'hbl-platinum-cc', type: 'credit', network: 'Visa', name: '', last4: '' },
+            { id: Date.now() + 1, bank: 'alfalah', product: 'alf-gold-dc', type: 'debit', network: 'Visa', name: '', last4: '' },
+            { id: Date.now() + 2, bank: 'meezan', product: 'meezan-titanium-dc', type: 'debit', network: 'Mastercard', name: '', last4: '' },
+            { id: Date.now() + 3, bank: 'sadapay', product: 'sp-mastercard-dc', type: 'debit', network: 'Mastercard', name: '', last4: '' }
           ];
           if (sb && session) {
             const { data, error } = await sb.from('user_cards').insert(demo.map(toCardRow)).select();

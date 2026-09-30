@@ -198,9 +198,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const addDemoCards = useCallback(async () => {
     const demo: Omit<Card, 'id'>[] = [
-      { bank: 'hbl', type: 'credit', network: 'Visa', name: 'Platinum', last4: '' },
-      { bank: 'ubl', type: 'debit', network: 'Mastercard', name: '', last4: '' },
-      { bank: 'meezan', type: 'debit', network: 'PayPak', name: '', last4: '' },
+      { bank: 'hbl', product: 'hbl-platinum-cc', type: 'credit', network: 'Visa', name: '', last4: '' },
+      { bank: 'alfalah', product: 'alf-gold-dc', type: 'debit', network: 'Visa', name: '', last4: '' },
+      { bank: 'meezan', product: 'meezan-titanium-dc', type: 'debit', network: 'Mastercard', name: '', last4: '' },
+      { bank: 'sadapay', product: 'sp-mastercard-dc', type: 'debit', network: 'Mastercard', name: '', last4: '' },
     ];
     for (const c of demo) await addCard(c);
   }, [addCard]);

@@ -2,7 +2,9 @@
 
 Bank card deals for Pakistan — web app and mobile app (iOS/Android), sharing one Supabase backend. Add your debit/credit cards, then browse discounts **daily, weekly or monthly**, filtered by **city** and **category**. Sign in with Google to sync your wallet across devices. Deals are managed from a single admin page (web).
 
-> **The bundled deals are sample data, not live bank offers.** Replace them with real, verified offers via `/admin`.
+> **Deals:** without a database the app shows `deals.js` — real offers collected on 1 Oct 2026 from the banks' published card discounts (via Peekaboo Guru, each linked to its source). Offers change constantly; refresh them or manage your own via `/admin`.
+>
+> **Card art:** `cards/*.webp` are the issuers' official card images, used to show people the exact card they hold. They belong to the banks — get permission before a public launch.
 
 The web app is a static site (HTML/CSS/JS, no build step). The mobile app lives in [`mobile/`](mobile/) — see [`mobile/README.md`](mobile/README.md) for its setup, run and build instructions. This README covers the web app and the shared Supabase backend both apps use.
 
@@ -12,8 +14,11 @@ The web app is a static site (HTML/CSS/JS, no build step). The mobile app lives 
 | --- | --- |
 | `index.html`, `app.js`, `styles.css` | Public web app |
 | `admin.html`, `admin.js`, `admin.css` | **The** admin page (`/admin`) — sign in (Google or email/password), add/edit/duplicate/hide/delete deals |
-| `catalog.js` | Banks, cities, categories (shared) |
-| `sample-deals.js` | Built-in sample deals — offline fallback and seed source |
+| `catalog.js` | Banks & wallets, real card products (`CARD_PRODUCTS`), cities, categories (shared) |
+| `cards/` | Official card art per product (`<product-id>.webp`); products without art are drawn |
+| `deals.js` | Real offers (`REAL_DEALS`), used when Supabase isn't configured |
+| `icons.js` | Monoline SVG icons (categories + UI) |
+| `sample-deals.js` | Illustrative sample deals — fallback when `deals.js` is absent |
 | `config.js` | Supabase URL + anon key (web) |
 | `mobile/` | The iOS/Android app — see [`mobile/README.md`](mobile/README.md) |
 | `supabase/schema.sql` | Tables (`deals`, `profiles`, `user_cards`, `admins`), row-level security, `is_admin()` |

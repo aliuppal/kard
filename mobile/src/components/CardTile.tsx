@@ -1,7 +1,7 @@
 import React from 'react';
-import { View, Text, Pressable, StyleSheet } from 'react-native';
+import { View, Text, Pressable, StyleSheet, Image } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { BANK_BY_ID } from '../lib/deals';
+import { BANK_BY_ID, PRODUCT_BY_ID, cardImageUrl } from '../lib/deals';
 import { Card } from '../lib/wallet';
 
 // A physical-card look without a gradient dependency: bank color base, a soft
@@ -9,6 +9,22 @@ import { Card } from '../lib/wallet';
 export default function CardTile({ card, onRemove }: { card: Card; onRemove: () => void }) {
   const bank = BANK_BY_ID[card.bank];
   if (!bank) return null;
+  const product = card.product ? PRODUCT_BY_ID[card.product] : undefined;
+
+  // Official card art from the issuer, on a light tray (much of the art assumes a light background).
+  if (product?.img) {
+    return (
+      <View style={styles.photo}>
+        <Pressable onPress={onRemove} style={[styles.x, { backgroundColor: 'rgba(29,25,20,0.55)' }]} accessibilityLabel={`Remove ${product.name}`} hitSlop={8}>
+          <MaterialCommunityIcons name="close" size={14} color="#fff" />
+        </Pressable>
+        <Image source={{ uri: cardImageUrl(product) }} style={styles.photoImg} resizeMode="contain" accessibilityLabel={product.name} />
+        <Text style={styles.photoName} numberOfLines={1}>{card.name || product.name}</Text>
+        <Text style={styles.photoMeta}>{card.last4 ? `•••• ${card.last4} · ` : ''}{card.network || product.nets[0]}</Text>
+      </View>
+    );
+  }
+
   return (
     <View style={[styles.card, { backgroundColor: bank.color, shadowColor: bank.color }]}>
       <View style={styles.sheen} pointerEvents="none" />
@@ -17,7 +33,7 @@ export default function CardTile({ card, onRemove }: { card: Card; onRemove: () 
         <MaterialCommunityIcons name="close" size={14} color="#fff" />
       </Pressable>
       <View style={styles.topRow}>
-        <Text style={styles.bankName}>{bank.name}</Text>
+        <Text style={styles.bankName} numberOfLines={2}>{product ? product.name.replace(/s*(Credit|Debit)s*Card$/i, '').replace(/(Credit|Debit)Card$/, '') : bank.name}</Text>
         <Text style={styles.type}>{card.type === 'credit' ? 'CREDIT' : 'DEBIT'}</Text>
       </View>
       <View style={styles.chipRow}>
@@ -33,6 +49,13 @@ export default function CardTile({ card, onRemove }: { card: Card; onRemove: () 
 }
 
 const styles = StyleSheet.create({
+  photo: {
+    borderRadius: 18, padding: 14, backgroundColor: '#f6f1e9', gap: 2,
+    shadowColor: '#28180a', shadowOpacity: 0.18, shadowRadius: 16, shadowOffset: { width: 0, height: 10 }, elevation: 4,
+  },
+  photoImg: { width: '100%', aspectRatio: 1.7, marginBottom: 8 },
+  photoName: { color: '#1d1914', fontSize: 14, fontWeight: '700' },
+  photoMeta: { color: '#6b6358', fontSize: 12.5 },
   card: {
     borderRadius: 18, padding: 18, aspectRatio: 1.586, justifyContent: 'space-between', overflow: 'hidden',
     shadowOpacity: 0.35, shadowRadius: 16, shadowOffset: { width: 0, height: 10 }, elevation: 5,

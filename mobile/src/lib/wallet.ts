@@ -10,6 +10,7 @@ export type CardType = 'credit' | 'debit';
 export interface Card {
   id: string | number;
   bank: string;
+  product?: string; // id from catalog products; empty = other / not listed
   type: CardType;
   network: string;
   name: string;
@@ -39,6 +40,7 @@ export async function setLocalCards(cards: Card[]): Promise<void> {
 const fromRow = (r: any): Card => ({
   id: r.id,
   bank: r.bank,
+  product: r.product || '',
   type: r.card_type,
   network: r.network || '',
   name: r.nickname || '',
@@ -48,6 +50,7 @@ const fromRow = (r: any): Card => ({
 const toRow = (userId: string, c: Omit<Card, 'id'>) => ({
   user_id: userId,
   bank: c.bank,
+  product: c.product || null,
   card_type: c.type,
   network: c.network || null,
   nickname: c.name || null,

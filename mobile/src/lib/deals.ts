@@ -2,6 +2,7 @@
 // data layer, kept behaviourally identical so both apps agree on what's on.
 import catalog from '../data/catalog.json';
 import sampleDealsRaw from '../data/sampleDeals.json';
+import realDealsData from '../data/realDeals.json';
 import { supabase, isSupabaseConfigured } from './supabase';
 import { addDays, dayDiff, listJoin, ord, DAY, fmt, today as todayFn } from './dates';
 
@@ -24,9 +25,11 @@ export interface Deal {
   until: Date;
   hasEnd: boolean;
   terms?: string | null;
+  src?: string | null;
 }
 
-export type DealSource = 'sample' | 'db' | 'fallback';
+export type DealSource = 'real' | 'sample' | 'db' | 'fallback';
+export const REAL_DEALS_ASOF: string | null = realDealsData.asOf;
 
 const BANK_IDS = new Set(catalog.banks.map(b => b.id));
 const FAR = 36500; // "no start / no end" sentinel, in days
@@ -76,13 +79,16 @@ function fromRow(r: any, today: Date): Deal {
     until: r.end_date ? parseDate(r.end_date) : addDays(today, FAR),
     hasEnd: !!r.end_date,
     terms: r.terms,
+    src: r.source_url || null,
   };
 }
 
 export async function loadDeals(): Promise<{ source: DealSource; deals: Deal[] }> {
   const today = todayFn();
   const sample = () => (sampleDealsRaw as any[]).map((d, i) => fromSample(d, i, today));
-  if (!isSupabaseConfigured) return { source: 'sample', deals: sample() };
+  const real = () => (realDealsData.deals as any[]).map((r, i) => fromRow({ id: `r${i}`, ...r }, today)).filter(d => d.banks.length);
+  const offline = (): { source: DealSource; deals: Deal[] } => realDealsData.deals.length ? { source: 'real', deals: real() } : { source: 'sample', deals: sample() };
+  if (!isSupabaseConfigured) return offline();
   try {
     const { data, error } = await supabase
       .from('deals')
@@ -94,7 +100,8 @@ export async function loadDeals(): Promise<{ source: DealSource; deals: Deal[] }
     return { source: 'db', deals: rows };
   } catch (err) {
     console.warn('Kard: could not load deals from Supabase, using sample data.', err);
-    return { source: 'fallback', deals: sample() };
+    const o = offline();
+    return o.source === 'real' ? o : { source: 'fallback', deals: o.deals };
   }
 }
 
@@ -124,4 +131,11 @@ export const CITIES = catalog.cities;
 export const CATEGORIES = catalog.categories;
 export const BANK_BY_ID = Object.fromEntries(BANKS.map(b => [b.id, b])) as Record<string, (typeof BANKS)[number]>;
 export const CAT_BY_ID = Object.fromEntries(CATEGORIES.map(c => [c.id, c])) as Record<string, (typeof CATEGORIES)[number]>;
+export interface CardProduct { id: string; bank: string; name: string; type: CardType; nets: string[]; tier: string; img?: boolean }
+export const PRODUCTS = (catalog.products || []) as CardProduct[];
+export const PRODUCT_BY_ID = Object.fromEntries(PRODUCTS.map(p => [p.id, p])) as Record<string, CardProduct>;
+export const productsOf = (bank: string) => PRODUCTS.filter(p => p.bank === bank);
+// Card art is served by the web app (kard/cards/<id>.webp).
+const SITE_URL = (process.env.EXPO_PUBLIC_SITE_URL || 'https://kard-drab.vercel.app').replace(/\/$/, '');
+export const cardImageUrl = (p: CardProduct) => `${SITE_URL}/cards/${p.id}.webp`;
 export const catOf = (id: string) => CAT_BY_ID[id] || { id, name: id, icon: '🏷️', color: '#6b6358' };

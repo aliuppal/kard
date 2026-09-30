@@ -3,7 +3,7 @@ import { View, Text, TextInput, Pressable, ScrollView, StyleSheet, Alert, Activi
 import { router, Stack } from 'expo-router';
 import { useTheme } from '../src/theme';
 import { useApp } from '../src/context/AppContext';
-import { BANKS } from '../src/lib/deals';
+import { BANKS, PRODUCT_BY_ID, productsOf } from '../src/lib/deals';
 import { CardType } from '../src/lib/wallet';
 
 const NETWORKS = ['Visa', 'Mastercard', 'UnionPay', 'PayPak', 'Other'];
@@ -21,6 +21,7 @@ export default function AddCardScreen() {
   const t = useTheme();
   const { addCard } = useApp();
   const [bank, setBank] = useState<string | null>(null);
+  const [product, setProduct] = useState<string>(''); // '' = other / not listed
   const [type, setType] = useState<CardType>('credit');
   const [network, setNetwork] = useState('Visa');
   const [name, setName] = useState('');
@@ -31,7 +32,8 @@ export default function AddCardScreen() {
     if (!bank) { Alert.alert('Pick a bank', 'Choose which bank issued this card.'); return; }
     setSaving(true);
     try {
-      await addCard({ bank, type, network, name: name.trim().slice(0, 30), last4: /^\d{4}$/.test(last4) ? last4 : '' });
+      const p = PRODUCT_BY_ID[product];
+      await addCard({ bank, product, type: p ? p.type : type, network: p && !p.nets.includes(network) ? p.nets[0] : network, name: name.trim().slice(0, 30), last4: /^\d{4}$/.test(last4) ? last4 : '' });
       router.back();
     } catch (err: any) {
       Alert.alert('Could not save this card', err?.message || 'Please try again.');
@@ -44,34 +46,44 @@ export default function AddCardScreen() {
     <SafeAreaView style={[styles.root, { backgroundColor: t.bg }]}>
       <Stack.Screen options={{ title: 'Add a card', presentation: 'modal' }} />
       <ScrollView contentContainerStyle={{ padding: 16, gap: 18 }}>
-        <Text style={{ color: t.muted, fontSize: 13 }}>We only need the bank and card type to match offers — don't enter the card number.</Text>
+        <Text style={{ color: t.muted, fontSize: 13 }}>Pick the card you carry so we can match its offers. Never enter the card number.</Text>
 
         <View>
           <Text style={[styles.label, { color: t.muted }]}>Bank *</Text>
           <View style={styles.wrap}>
-            {BANKS.map(b => <Chip key={b.id} label={b.short} active={bank === b.id} onPress={() => setBank(b.id)} color={bank === b.id ? b.color : undefined} />)}
+            {BANKS.map(b => <Chip key={b.id} label={b.short} active={bank === b.id} onPress={() => { setBank(b.id); const first = productsOf(b.id)[0]; setProduct(first ? first.id : ''); if (first) setNetwork(first.nets[0]); }} color={bank === b.id ? b.color : undefined} />)}
           </View>
         </View>
 
-        <View>
+        {!!bank && (
+          <View>
+            <Text style={[styles.label, { color: t.muted }]}>Card *</Text>
+            <View style={styles.wrap}>
+              {productsOf(bank).map(p => <Chip key={p.id} label={p.name} active={product === p.id} onPress={() => { setProduct(p.id); setNetwork(p.nets[0]); }} />)}
+              <Chip label="Other / not listed" active={!product} onPress={() => setProduct('')} />
+            </View>
+          </View>
+        )}
+
+        {!PRODUCT_BY_ID[product] && <View>
           <Text style={[styles.label, { color: t.muted }]}>Card type *</Text>
           <View style={styles.wrap}>
             <Chip label="Credit" active={type === 'credit'} onPress={() => setType('credit')} />
             <Chip label="Debit" active={type === 'debit'} onPress={() => setType('debit')} />
           </View>
-        </View>
+        </View>}
 
         <View>
           <Text style={[styles.label, { color: t.muted }]}>Network</Text>
           <View style={styles.wrap}>
-            {NETWORKS.map(n => <Chip key={n} label={n} active={network === n} onPress={() => setNetwork(n)} />)}
+            {(PRODUCT_BY_ID[product] ? PRODUCT_BY_ID[product].nets : NETWORKS).map(n => <Chip key={n} label={n} active={network === n} onPress={() => setNetwork(n)} />)}
           </View>
         </View>
 
         <View style={styles.row}>
           <View style={{ flex: 1 }}>
-            <Text style={[styles.label, { color: t.muted }]}>Card name (optional)</Text>
-            <TextInput value={name} onChangeText={setName} maxLength={30} placeholder="e.g. Platinum" placeholderTextColor={t.muted}
+            <Text style={[styles.label, { color: t.muted }]}>Nickname (optional)</Text>
+            <TextInput value={name} onChangeText={setName} maxLength={30} placeholder="e.g. Salary card" placeholderTextColor={t.muted}
               style={[styles.input, { color: t.ink, borderColor: t.line, backgroundColor: t.surface }]} />
           </View>
           <View style={{ flex: 1 }}>

@@ -171,7 +171,7 @@ input:user-invalid { border-color: var(--danger) !important; }
   background:
     radial-gradient(120% 90% at 100% 0%, rgb(255 255 255 / .22), transparent 55%),
     radial-gradient(80% 70% at 0% 100%, rgb(0 0 0 / .28), transparent 60%),
-    linear-gradient(150deg, var(--bc), color-mix(in srgb, var(--bc) 60%, #120a04));
+    linear-gradient(150deg, var(--face, var(--bc)), color-mix(in srgb, var(--face, var(--bc)) 60%, #120a04));
   box-shadow: 0 1px 0 rgb(255 255 255 / .2) inset, 0 14px 30px -14px color-mix(in srgb, var(--bc) 70%, #000);
   display: flex; flex-direction: column; justify-content: space-between;
   transition: transform .3s var(--ease);
@@ -199,6 +199,22 @@ input:user-invalid { border-color: var(--danger) !important; }
 .card:hover .x, .card .x:focus-visible { opacity: 1; }
 .card .x:hover { background: rgb(0 0 0 / .5); }
 @media (hover: none) { .card .x { opacity: 1; } }
+/* real card art: the issuer's image sits on a light tray (art is light-bg in many cases) */
+.card.photo {
+  margin: 0; padding: 10px 10px 8px; color: var(--ink); background: #f6f1e9;
+  box-shadow: 0 1px 0 rgb(255 255 255 / .6) inset, 0 12px 28px -16px rgb(40 24 10 / .45);
+  justify-content: flex-start; gap: 6px; width: 250px; aspect-ratio: auto; height: 190px;
+}
+@media (prefers-color-scheme: dark) { .card.photo { background: #e9e2d6; } }
+.card.photo img { flex: 1; min-height: 0; width: 100%; object-fit: contain; filter: drop-shadow(0 6px 10px rgb(40 24 10 / .22)); }
+.card.photo figcaption { display: flex; flex-direction: column; min-width: 0; color: #1d1914; }
+.card.photo figcaption b { font-family: var(--font-body); font-size: 12.5px; font-weight: 650; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.card.photo figcaption span { font-size: 11.5px; color: #6b6358; }
+.card.photo .x { background: rgb(29 25 20 / .55); }
+/* drawn cards: tier finishes over the bank colour */
+.card.tier-gold { --face: color-mix(in srgb, var(--bc) 25%, #b8913a); }
+.card.tier-platinum, .card.tier-titanium { --face: color-mix(in srgb, var(--bc) 30%, #5d6168); }
+.card.tier-infinite, .card.tier-signature, .card.tier-world { --face: color-mix(in srgb, var(--bc) 22%, #1f1d1b); }
 .card.add {
   font: inherit; font-weight: 600; color: var(--muted); cursor: pointer;
   background: transparent; box-shadow: none; border: 1.5px dashed var(--line-strong);
@@ -386,6 +402,10 @@ dialog h2 { font-size: 24px; font-weight: 750; margin-bottom: 4px; }
 .seg input:checked + span { background: var(--ink); color: var(--on-ink); border-color: var(--ink); }
 .seg input:focus-visible + span { outline: 2px solid var(--ink); outline-offset: 2px; }
 .dialog-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 4px; }
+.card-preview { height: 150px; display: grid; place-items: center; background: #f6f1e9; border-radius: var(--r); padding: 12px; }
+.card-preview img { max-width: 100%; max-height: 126px; object-fit: contain; filter: drop-shadow(0 8px 12px rgb(40 24 10 / .25)); animation: pop .3s var(--ease); }
+.card-preview .card { width: 200px; animation: pop .3s var(--ease); }
+[hidden] { display: none !important; }
 
 /* ---------- motion ---------- */
 @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }

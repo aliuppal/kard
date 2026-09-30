@@ -1,9 +1,10 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useTheme } from '../theme';
-import { DealSource } from '../lib/deals';
+import { DealSource, REAL_DEALS_ASOF } from '../lib/deals';
 
 const MESSAGES: Record<DealSource, string> = {
+  real: `Offers collected ${REAL_DEALS_ASOF || 'recently'} from the banks' published card discounts. They change often, so confirm with the merchant before paying.`,
   sample: "Sample data. The database isn't connected, so these are built-in placeholder offers, not live bank deals.",
   fallback: "Couldn't reach the database — showing built-in sample offers instead. Please try again later.",
   db: 'Sample data. The offers shown are illustrative placeholders, not live bank deals. Always confirm with the bank or merchant before paying.',

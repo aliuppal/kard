@@ -124,6 +124,9 @@ create table if not exists public.user_cards (
   created_at timestamptz not null default now()
 );
 
+-- Card product id from catalog.js CARD_PRODUCTS (e.g. 'hbl-platinum-cc'); null = 'other / not listed'.
+alter table public.user_cards add column if not exists product text;
+
 create index if not exists user_cards_user_idx on public.user_cards (user_id);
 
 alter table public.user_cards enable row level security;
@@ -133,6 +136,9 @@ create policy "user_cards: owner only" on public.user_cards
   for all to authenticated using (user_id = auth.uid()) with check (user_id = auth.uid());
 
 -- ── row-level security: deals ───────────────────────────────────────────
+-- Link to where an offer was published (bank page or aggregator).
+alter table public.deals add column if not exists source_url text;
+
 alter table public.deals enable row level security;
 
 drop policy if exists "public can read active deals" on public.deals;
