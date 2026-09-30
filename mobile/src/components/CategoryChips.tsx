@@ -1,13 +1,15 @@
 import React from 'react';
 import { ScrollView, Pressable, Text, StyleSheet } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useTheme } from '../theme';
 import { CATEGORIES } from '../lib/deals';
+import { categoryIcon } from '../lib/categoryIcons';
 import { useApp } from '../context/AppContext';
 
 export default function CategoryChips() {
   const t = useTheme();
   const { filters, setFilters } = useApp();
-  const items = [{ id: 'all', name: 'All', icon: '✨' }, ...CATEGORIES];
+  const items = [{ id: 'all', name: 'All' }, ...CATEGORIES];
 
   return (
     <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.row}>
@@ -17,9 +19,15 @@ export default function CategoryChips() {
           <Pressable
             key={c.id}
             onPress={() => setFilters({ cat: c.id })}
-            style={[styles.chip, { borderColor: active ? t.brand : t.line, backgroundColor: active ? t.brand : t.surface }]}
+            accessibilityRole="button"
+            accessibilityState={{ selected: active }}
+            style={({ pressed }) => [
+              styles.chip,
+              { borderColor: active ? t.ink : t.line, backgroundColor: active ? t.ink : t.surface, transform: [{ scale: pressed ? 0.97 : 1 }] },
+            ]}
           >
-            <Text style={{ color: active ? t.brandInk : t.ink, fontWeight: '600', fontSize: 13.5 }}>{c.icon} {c.name}</Text>
+            <MaterialCommunityIcons name={categoryIcon(c.id)} size={15} color={active ? t.onInk : t.muted} />
+            <Text style={{ color: active ? t.onInk : t.ink2, fontWeight: '500', fontSize: 13.5 }}>{c.name}</Text>
           </Pressable>
         );
       })}
@@ -28,6 +36,6 @@ export default function CategoryChips() {
 }
 
 const styles = StyleSheet.create({
-  row: { paddingHorizontal: 16, gap: 8, paddingVertical: 4 },
-  chip: { paddingHorizontal: 12, paddingVertical: 7, borderRadius: 999, borderWidth: 1 },
+  row: { paddingHorizontal: 16, gap: 6, paddingVertical: 4 },
+  chip: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingLeft: 10, paddingRight: 12, paddingVertical: 7, borderRadius: 999, borderWidth: 1 },
 });

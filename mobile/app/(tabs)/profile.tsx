@@ -100,9 +100,9 @@ export default function ProfileScreen() {
                   key={c}
                   disabled={savingCity !== null}
                   onPress={async () => { setSavingCity(c); await setProfileCity(c); setSavingCity(null); }}
-                  style={[styles.chip, { borderColor: active ? t.brand : t.line, backgroundColor: active ? t.brand : 'transparent' }]}
+                  style={[styles.chip, { borderColor: active ? t.ink : t.line, backgroundColor: active ? t.ink : 'transparent' }]}
                 >
-                  <Text style={{ color: active ? t.brandInk : t.ink, fontWeight: '600', fontSize: 13 }}>{c}</Text>
+                  <Text style={{ color: active ? t.onInk : t.ink, fontWeight: '600', fontSize: 13 }}>{c}</Text>
                 </Pressable>
               );
             })}

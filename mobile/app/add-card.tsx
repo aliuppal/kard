@@ -11,8 +11,8 @@ const NETWORKS = ['Visa', 'Mastercard', 'UnionPay', 'PayPak', 'Other'];
 function Chip({ label, active, onPress, color }: { label: string; active: boolean; onPress: () => void; color?: string }) {
   const t = useTheme();
   return (
-    <Pressable onPress={onPress} style={[styles.chip, { borderColor: active ? (color || t.brand) : t.line, backgroundColor: active ? (color || t.brand) : t.surface }]}>
-      <Text style={{ color: active ? '#fff' : t.ink, fontWeight: '600', fontSize: 13.5 }}>{label}</Text>
+    <Pressable onPress={onPress} style={[styles.chip, { borderColor: active ? (color || t.ink) : t.line, backgroundColor: active ? (color || t.ink) : t.surface }]}>
+      <Text style={{ color: active ? (color ? '#fff' : t.onInk) : t.ink, fontWeight: '600', fontSize: 13.5 }}>{label}</Text>
     </Pressable>
   );
 }

@@ -124,4 +124,4 @@ export const CITIES = catalog.cities;
 export const CATEGORIES = catalog.categories;
 export const BANK_BY_ID = Object.fromEntries(BANKS.map(b => [b.id, b])) as Record<string, (typeof BANKS)[number]>;
 export const CAT_BY_ID = Object.fromEntries(CATEGORIES.map(c => [c.id, c])) as Record<string, (typeof CATEGORIES)[number]>;
-export const catOf = (id: string) => CAT_BY_ID[id] || { id, name: id, icon: '🏷️', color: '#64748b' };
+export const catOf = (id: string) => CAT_BY_ID[id] || { id, name: id, icon: '🏷️', color: '#6b6358' };

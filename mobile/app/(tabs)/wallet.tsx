@@ -33,7 +33,7 @@ export default function WalletScreen() {
               {!session ? ' Sign in with Google on the Profile tab to sync them across devices.' : ''}
             </Text>
             <Pressable onPress={() => router.push('/add-card')} style={[styles.btn, styles.primary, { backgroundColor: t.brand }]}>
-              <Text style={{ color: t.brandInk, fontWeight: '700' }}>＋ Add a card</Text>
+              <Text style={{ color: t.brandInk, fontWeight: '700' }}>Add a card</Text>
             </Pressable>
             <Pressable onPress={addDemoCards} style={[styles.btn, { borderColor: t.line, borderWidth: 1, marginTop: 8 }]}>
               <Text style={{ color: t.ink, fontWeight: '600' }}>Try with sample cards</Text>
@@ -45,7 +45,7 @@ export default function WalletScreen() {
               {cards.map(c => <CardTile key={c.id} card={c} onRemove={() => confirmRemove(c.id, `${c.bank.toUpperCase()} card`)} />)}
             </View>
             <Pressable onPress={() => router.push('/add-card')} style={[styles.btn, styles.primary, { backgroundColor: t.brand, marginTop: 16 }]}>
-              <Text style={{ color: t.brandInk, fontWeight: '700' }}>＋ Add another card</Text>
+              <Text style={{ color: t.brandInk, fontWeight: '700' }}>Add another card</Text>
             </Pressable>
           </>
         )}

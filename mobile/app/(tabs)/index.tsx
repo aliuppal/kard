@@ -118,7 +118,7 @@ function Weekly({ base, anchor, setAnchor, filters, mine, hasActiveFilters, clea
             <Text style={[styles.sectionTitle, { color: t.ink, marginBottom: 10 }]}>Day by day</Text>
           </View>
           {days.map((d, i) => (
-            <View key={i} style={[styles.dayCol, { borderColor: sameDay(d, today) ? t.brand : t.line, backgroundColor: t.surface }]}>
+            <View key={i} style={[styles.dayCol, { borderColor: sameDay(d, today) ? t.brand : 'transparent', backgroundColor: t.sunk }]}>
               <Text style={[styles.dayTitle, { color: t.ink }]}>{DAY_FULL[d.getDay()]} <Text style={{ color: t.muted, fontWeight: '400', fontSize: 12.5 }}>{fmt(d)} · {perDay[i].length}</Text></Text>
               {perDay[i].length ? perDay[i].map(dl => <DealCard key={dl.id} deal={dl} mine={matchCards(dl)} />) : <Text style={{ color: t.muted, fontSize: 13 }}>No day-specific deals.</Text>}
             </View>
@@ -150,10 +150,10 @@ function Monthly({ base, anchor, setAnchor, filters, mine, hasActiveFilters, cle
       <Pressable
         key={n}
         onPress={() => setAnchor(new Date(y, m, n))}
-        style={[styles.calCell, styles.calDay, { borderColor: isSel ? t.brand : 'transparent', backgroundColor: t.surface, opacity: isPast ? 0.55 : 1 }]}
+        style={[styles.calCell, styles.calDay, { borderColor: isSel ? t.ink : 'transparent', backgroundColor: t.surface, opacity: isPast ? 0.55 : 1 }]}
       >
         <Text style={[styles.calNum, isToday ? { backgroundColor: t.brand, color: t.brandInk } : { color: t.ink }]}>{n}</Text>
-        {!!perDay[n].length && <Text style={[styles.calCount, { color: t.brand }]}>{perDay[n].length}</Text>}
+        {!!perDay[n].length && <Text style={[styles.calCount, { color: t.ink2 }]}>{perDay[n].length}</Text>}
       </Pressable>
     );
   }
@@ -176,7 +176,7 @@ function Monthly({ base, anchor, setAnchor, filters, mine, hasActiveFilters, cle
 
       <View style={{ marginTop: 18 }}>
         <SectionTitle label={fmtLong(anchor)} count={selDeals.length} />
-        {everyN > 0 && <Text style={{ color: '#9aaba1', fontSize: 12.5, marginLeft: 16, marginTop: -8, marginBottom: 10 }}>({everyN} every-day)</Text>}
+        {everyN > 0 && <Text style={{ color: t.muted, fontSize: 12.5, marginLeft: 16, marginTop: -8, marginBottom: 10 }}>({everyN} every-day)</Text>}
         {selDeals.length ? <List items={selDeals} matchCards={matchCards} /> : <Empty message="No deals on this day." hasActiveFilters={hasActiveFilters} clearFilters={clearFilters} />}
       </View>
 

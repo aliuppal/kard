@@ -31,7 +31,8 @@
   const BANK = Object.fromEntries(BANKS.map(b => [b.id, b]));
   const CAT = Object.fromEntries(CATEGORIES.map(c => [c.id, c]));
 
-  const catOf = id => CAT[id] || { id, name: id, icon: '🏷️', color: '#64748b' };
+  const catOf = id => CAT[id] || { id, name: id, icon: '🏷️', color: '#6b6358' };
+  const ICON = (name, size) => window.KARD_ICON ? window.KARD_ICON(name, size) : '';
   const CFG = window.KARD_CONFIG || {};
   const FAR = 36500; // "no start / no end" sentinel, in days
   let deals = [];
@@ -201,7 +202,7 @@
     const shown = banks.slice(0, 4);
     const bankChips = shown.map(id => {
       const b = BANK[id], has = mineBanks.has(id);
-      return `<span class="bank${has ? ' mine' : ''}" style="--bc:${b.color}"><i></i>${esc(b.short)}${has ? ' ✓' : ''}</span>`;
+      return `<span class="bank${has ? ' mine' : ''}" style="--bc:${b.color}"><i></i>${esc(b.short)}${has ? ICON('check', 13) : ''}</span>`;
     }).join('') + (banks.length > shown.length ? `<span class="tag">+${banks.length - shown.length}</span>` : '');
 
     const cities = d.cities === 'all' ? 'All Pakistan'
@@ -217,17 +218,23 @@
       : `<span class="tag">Valid till ${fmt(d.until)}</span>`;
     const limits = [d.max && 'Max ' + d.max, d.min && 'Min spend ' + d.min].filter(Boolean).join(' · ');
 
-    return `<article class="deal${mine.length ? ' match' : ''}">
+    // "15% off" → big "15%" + "off"; "Rs 4/L off" → "Rs 4/L" + "off"; anything else stays whole.
+    const om = /^(\d+(?:\.\d+)?%|Rs\s?[\d,]+(?:\/\w+)?)\s*(.*)$/.exec(d.offer || '');
+    const offer = om
+      ? `<b>${esc(om[1])}</b>${om[2] ? `<span>${esc(om[2])}</span>` : ''}`
+      : `<b class="words">${esc(d.offer)}</b>`;
+
+    return `<article class="deal${mine.length ? ' match' : ''}" style="--cc:${cat.color}">
       <div class="deal-top">
-        <div class="avatar" style="--cc:${cat.color}" title="${esc(cat.name)}">${cat.icon}</div>
-        <div><h3>${esc(d.m)}</h3><div class="cat">${esc(cat.name)}</div></div>
-        <div class="offer">${esc(d.offer)}</div>
+        <div class="offer">${offer}</div>
+        <div class="avatar" title="${esc(cat.name)}">${ICON(cat.id, 20)}</div>
       </div>
-      <div class="facts">
-        <span>🗓 ${esc(schedLabel(d))}</span>
-        <span>📍 ${esc(cities)}</span>
-        ${limits ? `<span>💰 ${esc(limits)}</span>` : ''}
-      </div>
+      <div class="deal-id"><h3>${esc(d.m)}</h3><div class="cat">${esc(cat.name)}</div></div>
+      <ul class="facts">
+        <li>${ICON('calendar', 15)}${esc(schedLabel(d))}</li>
+        <li>${ICON('pin', 15)}${esc(cities)}</li>
+        ${limits ? `<li>${ICON('coins', 15)}${esc(limits)}</li>` : ''}
+      </ul>
       <div class="tags">${bankChips}<span class="tag">${types}${d.nets ? ' · ' + esc(d.nets.join('/')) + ' only' : ''}</span>${timing}</div>
       <details><summary>Terms</summary><p>${esc(d.terms || 'See merchant for details.')}</p></details>
     </article>`;
@@ -250,9 +257,9 @@
     return `<div class="vhead">
       <div><h2>${title}</h2><div class="sub">${sub}</div></div>
       <div class="nav">
-        <button class="btn sm" data-act="${prevAct}" aria-label="Previous">‹</button>
+        <button class="btn sm icon" data-act="${prevAct}" aria-label="Previous">${ICON('left', 16)}</button>
         <button class="btn sm" data-act="today">${todayLabel}</button>
-        <button class="btn sm" data-act="${nextAct}" aria-label="Next">›</button>
+        <button class="btn sm icon" data-act="${nextAct}" aria-label="Next">${ICON('right', 16)}</button>
       </div>
     </div>`;
   }
@@ -349,24 +356,25 @@
     const w = $('#wallet');
     if (!state.cards.length) {
       w.innerHTML = `<div class="empty-wallet"><span>Add your debit and credit cards to see only the deals you can actually use.${sb && !session ? ' Sign in with Google (above) to sync them across devices.' : ''}</span>
-        <button class="btn primary sm" data-act="add-card">＋ Add a card</button>
-        <button class="btn sm" data-act="demo-cards">Try with sample cards</button></div>`;
+        <div class="empty-actions"><button class="btn primary sm" data-act="add-card">Add a card</button>
+        <button class="btn sm ghost" data-act="demo-cards">Try with sample cards</button></div></div>`;
       return;
     }
     w.innerHTML = state.cards.map(c => {
       const b = BANK[c.bank];
       return `<div class="card" style="--bc:${b.color}">
-        <button class="x" data-act="del-card" data-id="${c.id}" aria-label="Remove ${esc(b.name)} card">×</button>
-        <b>${esc(b.name)}</b>
-        <div class="meta"><span>${c.type === 'credit' ? 'Credit' : 'Debit'} · ${esc(c.network || '')}</span><span>${c.last4 ? '•••• ' + esc(c.last4) : ''}</span></div>
-        ${c.name ? `<div class="meta"><span>${esc(c.name)}</span></div>` : ''}
+        <button class="x" data-act="del-card" data-id="${c.id}" aria-label="Remove ${esc(b.name)} card">${ICON('x', 14)}</button>
+        <div class="card-top"><b>${esc(b.name)}</b><span class="type">${c.type === 'credit' ? 'Credit' : 'Debit'}</span></div>
+        <span class="chip-ic" aria-hidden="true"></span>
+        <div class="meta"><span class="num">${c.last4 ? '•••• ' + esc(c.last4) : esc(c.name || '')}</span><span class="net">${esc(c.network || '')}</span></div>
+        ${c.name && c.last4 ? `<span class="nick">${esc(c.name)}</span>` : ''}
       </div>`;
-    }).join('');
+    }).join('') + `<button class="card add" data-act="add-card">${ICON('plus', 22)}<span>Add card</span></button>`;
   }
 
   function renderFilters() {
-    $('#cats').innerHTML = [{ id: 'all', name: 'All categories', icon: '✨' }].concat(CATEGORIES).map(c =>
-      `<button class="chip" data-act="cat" data-id="${c.id}" aria-pressed="${state.cat === c.id}">${c.icon} ${esc(c.name)}</button>`).join('');
+    $('#cats').innerHTML = [{ id: 'all', name: 'All' }].concat(CATEGORIES).map(c =>
+      `<button class="chip" data-act="cat" data-id="${c.id}" aria-pressed="${state.cat === c.id}">${ICON(c.id, 16)}${esc(c.name)}</button>`).join('');
     const mine = $('#mine');
     mine.checked = useMine();
     mine.disabled = !state.cards.length;

@@ -136,7 +136,7 @@ on conflict do nothing;</pre>
         <label class="field"><span>Status</span><select id="a-status">${[['all', 'All'], ['active', 'Live'], ['inactive', 'Hidden'], ['expired', 'Expired']].map(([v, l]) => `<option value="${v}"${filters.status === v ? ' selected' : ''}>${l}</option>`).join('')}</select></label>
         <div class="toolbar-btns">
           <button class="btn" data-act="export">Export JSON</button>
-          <button class="btn primary" data-act="new">＋ New deal</button>
+          <button class="btn primary" data-act="new"><span class="plus" aria-hidden="true"></span>New deal</button>
         </div>
       </div>
       <div id="table-wrap"></div>`;
@@ -159,7 +159,7 @@ on conflict do nothing;</pre>
         const banks = d.banks.map(b => (BANK[b] ? BANK[b].short : b)).join(', ');
         const where = d.all_cities ? 'All Pakistan' : d.cities.length > 2 ? d.cities.slice(0, 2).join(', ') + ' +' + (d.cities.length - 2) : d.cities.join(', ');
         return `<tr class="${d.active ? '' : 'off'}">
-          <td data-l="Merchant"><b>${esc(d.merchant)}</b><br><span class="muted small">${cat.icon} ${esc(cat.name)}</span></td>
+          <td data-l="Merchant"><b>${esc(d.merchant)}</b><br><span class="muted small cat-cell">${window.KARD_ICON ? KARD_ICON(d.category, 14) : cat.icon} ${esc(cat.name)}</span></td>
           <td data-l="Offer">${esc(d.offer)}${d.discount_pct ? `<br><span class="muted small">${Number(d.discount_pct)}%</span>` : ''}</td>
           <td data-l="Banks">${esc(banks)}<br><span class="muted small">${esc(d.card_types.join(' & '))}${d.networks && d.networks.length ? ' · ' + esc(d.networks.join('/')) : ''}</span></td>
           <td data-l="Where">${esc(where)}</td>

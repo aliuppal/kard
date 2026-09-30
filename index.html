@@ -5,37 +5,62 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Kard — bank card deals in Pakistan</title>
   <meta name="description" content="Find debit and credit card discounts across Pakistan — daily, weekly and monthly — filtered by your cards, city and category.">
+  <meta name="theme-color" content="#f3eee6" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#141210" media="(prefers-color-scheme: dark)">
+  <meta property="og:title" content="Kard — bank card deals in Pakistan">
+  <meta property="og:description" content="Daily, weekly and monthly card discounts, filtered by the cards you carry.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='2' y='6' width='28' height='20' rx='5' fill='%23c2401a'/%3E%3Crect x='6' y='12' width='7' height='5' rx='1.5' fill='%23fffcf7'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Geist:wght@400..700&family=Geist+Mono:wght@500&display=swap">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <a class="skip" href="#view">Skip to deals</a>
+
   <header class="top">
     <div class="wrap top-row">
-      <div class="brand">
-        <span class="logo" aria-hidden="true">💳</span>
-        <div>
-          <h1>Kard</h1>
-          <p>Bank card deals across Pakistan</p>
-        </div>
+      <a class="brand" href="./" aria-label="Kard home">
+        <span class="mark" aria-hidden="true"><i></i></span>
+        <span class="word">kard</span>
+      </a>
+      <div class="top-actions">
+        <div id="auth" class="auth"></div>
+        <button class="btn" data-act="add-card"><span class="plus" aria-hidden="true"></span>Add card</button>
       </div>
-      <button class="btn primary" data-act="add-card">＋ Add card</button>
     </div>
   </header>
 
   <main class="wrap">
     <div id="notice" class="notice" role="note" hidden></div>
 
-    <section class="panel" aria-labelledby="wallet-h">
-      <div class="panel-head">
-        <h2 id="wallet-h">My cards</h2>
-        <div class="head-right">
-          <span class="muted small">Never enter full card numbers</span>
-          <div id="auth" class="auth"></div>
-        </div>
+    <section class="hero" aria-labelledby="wallet-h">
+      <div class="hero-copy">
+        <p class="eyebrow">Card deals · Pakistan</p>
+        <h1>Discounts for the cards <br class="br">already in your pocket.</h1>
+        <p class="lede">Add your bank cards and Kard shows what they save you today, this week and this month.</p>
       </div>
-      <div id="wallet" class="wallet"></div>
+      <div class="wallet-wrap">
+        <div class="wallet-head">
+          <h2 id="wallet-h">My cards</h2>
+          <span class="muted small">Bank and card type only. Never the card number.</span>
+        </div>
+        <div id="wallet" class="wallet"></div>
+      </div>
     </section>
 
-    <section class="panel filters" aria-label="Filters">
+    <section class="controls" aria-label="Filters">
+      <div class="controls-bar">
+        <nav class="tabs" role="tablist" aria-label="Deal period">
+          <button role="tab" data-act="view" data-v="daily">Daily</button>
+          <button role="tab" data-act="view" data-v="weekly">Weekly</button>
+          <button role="tab" data-act="view" data-v="monthly">Monthly</button>
+        </nav>
+        <label class="search">
+          <span class="sr">Search merchants</span>
+          <input id="q" type="search" placeholder="Search merchants, e.g. Khaadi" autocomplete="off">
+        </label>
+      </div>
       <div class="filter-row">
         <label class="field">
           <span>City</span>
@@ -61,36 +86,29 @@
             <option value="az">Merchant A–Z</option>
           </select>
         </label>
-        <label class="field grow">
-          <span>Search</span>
-          <input id="q" type="search" placeholder="Merchant, e.g. Khaadi" autocomplete="off">
+        <label class="toggle">
+          <input id="mine" type="checkbox">
+          <i aria-hidden="true"></i>
+          <span id="mine-label">Only deals for my cards</span>
         </label>
       </div>
       <div id="cats" class="chips" role="group" aria-label="Category"></div>
-      <label class="check">
-        <input id="mine" type="checkbox">
-        <span id="mine-label">Only deals for my cards</span>
-      </label>
     </section>
 
-    <nav class="tabs" role="tablist" aria-label="Deal period">
-      <button role="tab" data-act="view" data-v="daily">Daily</button>
-      <button role="tab" data-act="view" data-v="weekly">Weekly</button>
-      <button role="tab" data-act="view" data-v="monthly">Monthly</button>
-    </nav>
-
-    <div id="view" aria-live="polite"></div>
+    <div id="view" aria-live="polite" tabindex="-1"></div>
   </main>
 
   <footer class="wrap foot">
-    <span>Kard · offers change — always confirm with the bank or merchant.</span>
+    <span>Offers change often. Confirm with the bank or merchant before you pay.</span>
     <a href="admin.html">Admin</a>
   </footer>
 
   <dialog id="card-dialog">
     <form id="card-form" autocomplete="off">
-      <h2>Add a card</h2>
-      <p class="muted small">We only need the bank and card type to match offers. Don't enter the card number.</p>
+      <div class="dlg-head">
+        <h2>Add a card</h2>
+        <p class="muted small">We only need the bank and card type to match offers. Don't enter the card number.</p>
+      </div>
 
       <label class="field">
         <span>Bank</span>
@@ -121,12 +139,12 @@
         </label>
         <label class="field">
           <span>Last 4 digits <em>(optional)</em></span>
-          <input name="last4" inputmode="numeric" pattern="\d{4}" maxlength="4" placeholder="1234">
+          <input name="last4" inputmode="numeric" pattern="\d{4}" maxlength="4" placeholder="1234" title="Exactly 4 digits">
         </label>
       </div>
 
       <div class="dialog-actions">
-        <button type="button" class="btn" data-act="cancel-card">Cancel</button>
+        <button type="button" class="btn ghost" data-act="cancel-card">Cancel</button>
         <button type="submit" class="btn primary">Save card</button>
       </div>
     </form>
@@ -135,6 +153,7 @@
   <noscript><p class="wrap">This app needs JavaScript enabled.</p></noscript>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="catalog.js"></script>
+  <script src="icons.js"></script>
   <script src="sample-deals.js"></script>
   <script src="config.js"></script>
   <script src="app.js"></script>

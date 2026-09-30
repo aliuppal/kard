@@ -5,18 +5,18 @@ import { useTheme } from '../theme';
 export default function Segmented<T extends string>({ value, options, onChange }: { value: T; options: { value: T; label: string }[]; onChange: (v: T) => void }) {
   const t = useTheme();
   return (
-    <View style={[styles.wrap, { backgroundColor: t.surface, borderColor: t.line }]}>
+    <View style={[styles.wrap, { backgroundColor: t.sunk }]}>
       {options.map(o => {
         const active = o.value === value;
         return (
           <Pressable
             key={o.value}
             onPress={() => onChange(o.value)}
-            style={[styles.seg, active && { backgroundColor: t.brand }]}
+            style={[styles.seg, active && { backgroundColor: t.ink }]}
             accessibilityRole="tab"
             accessibilityState={{ selected: active }}
           >
-            <Text style={[styles.label, { color: active ? t.brandInk : t.muted }]}>{o.label}</Text>
+            <Text style={[styles.label, { color: active ? t.onInk : t.muted }]}>{o.label}</Text>
           </Pressable>
         );
       })}
@@ -25,7 +25,7 @@ export default function Segmented<T extends string>({ value, options, onChange }
 }
 
 const styles = StyleSheet.create({
-  wrap: { flexDirection: 'row', borderWidth: 1, borderRadius: 12, padding: 4, gap: 4 },
-  seg: { flex: 1, paddingVertical: 8, borderRadius: 9, alignItems: 'center' },
-  label: { fontWeight: '700', fontSize: 14 },
+  wrap: { flexDirection: 'row', borderRadius: 999, padding: 3, gap: 2 },
+  seg: { flex: 1, paddingVertical: 9, borderRadius: 999, alignItems: 'center' },
+  label: { fontWeight: '600', fontSize: 14 },
 });

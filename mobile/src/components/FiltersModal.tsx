@@ -20,9 +20,9 @@ function Chip({ label, active, onPress }: { label: string; active: boolean; onPr
   return (
     <Pressable
       onPress={onPress}
-      style={[styles.chip, { borderColor: active ? t.brand : t.line, backgroundColor: active ? t.brand : t.surface }]}
+      style={[styles.chip, { borderColor: active ? t.ink : t.line, backgroundColor: active ? t.ink : t.surface }]}
     >
-      <Text style={{ color: active ? t.brandInk : t.ink, fontWeight: '600', fontSize: 13.5 }}>{label}</Text>
+      <Text style={{ color: active ? t.onInk : t.ink, fontWeight: '600', fontSize: 13.5 }}>{label}</Text>
     </Pressable>
   );
 }
@@ -90,7 +90,7 @@ export default function FiltersModal({ visible, onClose }: { visible: boolean; o
               Only deals for my cards{!cards.length ? ' (add a card first)' : ''}
             </Text>
             <Switch value={filters.mine} onValueChange={mine => setFilters({ mine })} disabled={!cards.length}
-              trackColor={{ true: t.brand }} />
+              trackColor={{ true: t.ink }} />
           </View>
 
           <Pressable onPress={clearFilters} style={styles.clear}>
