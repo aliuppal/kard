@@ -7,7 +7,7 @@ import { isSupabaseConfigured } from '../../src/lib/supabase';
 
 function GoogleG() {
   // Inline "G" mark using colored letters — avoids bundling an SVG lib for one icon.
-  return <Text style={{ fontWeight: '800' }}><Text style={{ color: '#4285F4' }}>G</Text></Text>;
+  return <Text style={{ fontWeight: '600' }}><Text style={{ color: '#4285F4' }}>G</Text></Text>;
 }
 
 export default function ProfileScreen() {
@@ -41,7 +41,7 @@ export default function ProfileScreen() {
         <ScrollView contentContainerStyle={{ padding: 16 }}>
           <Text style={[styles.h1, { color: t.ink }]}>Profile</Text>
           <View style={[styles.card, { backgroundColor: t.surface, borderColor: t.line, marginTop: 16 }]}>
-            <Text style={{ color: t.ink, fontWeight: '700', fontSize: 15, marginBottom: 6 }}>Sign in to sync your cards</Text>
+            <Text style={{ color: t.ink, fontWeight: '500', fontSize: 15, marginBottom: 6 }}>Sign in to sync your cards</Text>
             <Text style={{ color: t.muted, marginBottom: 16 }}>
               Sign in with Google to save your wallet to your account — it'll show up on the web app and any other device too.
             </Text>
@@ -58,7 +58,7 @@ export default function ProfileScreen() {
                 {google.signingIn ? <ActivityIndicator color="#4285F4" /> : (
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
                     <GoogleG />
-                    <Text style={{ color: '#1f1f1f', fontWeight: '700' }}>Continue with Google</Text>
+                    <Text style={{ color: '#1f1f1f', fontWeight: '500' }}>Continue with Google</Text>
                   </View>
                 )}
               </Pressable>
@@ -81,17 +81,17 @@ export default function ProfileScreen() {
         <View style={[styles.card, { backgroundColor: t.surface, borderColor: t.line, marginTop: 16, flexDirection: 'row', alignItems: 'center', gap: 12 }]}>
           {avatar ? <Image source={{ uri: avatar }} style={styles.avatar} /> : (
             <View style={[styles.avatar, { backgroundColor: t.brandSoft, alignItems: 'center', justifyContent: 'center' }]}>
-              <Text style={{ color: t.brand, fontWeight: '800', fontSize: 18 }}>{(name || '?').charAt(0).toUpperCase()}</Text>
+              <Text style={{ color: t.brand, fontWeight: '600', fontSize: 18 }}>{(name || '?').charAt(0).toUpperCase()}</Text>
             </View>
           )}
           <View style={{ flex: 1 }}>
-            <Text style={{ color: t.ink, fontWeight: '700', fontSize: 15 }} numberOfLines={1}>{name}</Text>
+            <Text style={{ color: t.ink, fontWeight: '500', fontSize: 15 }} numberOfLines={1}>{name}</Text>
             <Text style={{ color: t.muted, fontSize: 12.5 }} numberOfLines={1}>{session.user.email}</Text>
           </View>
         </View>
 
         <View style={[styles.card, { backgroundColor: t.surface, borderColor: t.line, marginTop: 12 }]}>
-          <Text style={{ color: t.ink, fontWeight: '700', marginBottom: 10 }}>Home city</Text>
+          <Text style={{ color: t.ink, fontWeight: '500', marginBottom: 10 }}>Home city</Text>
           <View style={styles.wrap}>
             {CITIES.map(c => {
               const active = profile?.city === c;
@@ -113,7 +113,7 @@ export default function ProfileScreen() {
           onPress={() => Alert.alert('Sign out', 'Sign out of Kard?', [{ text: 'Cancel', style: 'cancel' }, { text: 'Sign out', style: 'destructive', onPress: signOut }])}
           style={[styles.btn, { borderColor: t.line, borderWidth: 1, marginTop: 16 }]}
         >
-          <Text style={{ color: t.danger, fontWeight: '700' }}>Sign out</Text>
+          <Text style={{ color: t.danger, fontWeight: '500' }}>Sign out</Text>
         </Pressable>
       </ScrollView>
     </View>
@@ -123,7 +123,7 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   root: { flex: 1 },
   center: { alignItems: 'center', justifyContent: 'center' },
-  h1: { fontSize: 22, fontWeight: '800' },
+  h1: { fontSize: 22, fontWeight: '600' },
   card: { borderWidth: 1, borderRadius: 14, padding: 16 },
   btn: { paddingVertical: 13, borderRadius: 12, alignItems: 'center' },
   avatar: { width: 48, height: 48, borderRadius: 24 },

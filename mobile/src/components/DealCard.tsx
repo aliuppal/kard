@@ -43,20 +43,20 @@ export default function DealCard({ deal, mine }: { deal: Deal; mine: Card[] }) {
   );
 
   return (
-    <View style={[styles.card, { backgroundColor: t.surface, borderColor: mine.length ? t.brandSoft : 'transparent' }]}>
+    <View style={[styles.card, { backgroundColor: t.surface, borderColor: mine.length ? t.ink2 : t.line }]}>
       <View style={styles.top}>
         <View style={styles.offer}>
           {om ? (
             <>
-              <Text style={[styles.offerBig, { color: t.brandText }]}>{om[1]}</Text>
+              <Text style={[styles.offerBig, { color: t.ink }]}>{om[1]}</Text>
               {!!om[2] && <Text style={[styles.offerRest, { color: t.ink2 }]}>{om[2]}</Text>}
             </>
           ) : (
-            <Text style={[styles.offerWords, { color: t.brandText }]}>{deal.offer}</Text>
+            <Text style={[styles.offerWords, { color: t.ink }]}>{deal.offer}</Text>
           )}
         </View>
-        <View style={[styles.avatar, { backgroundColor: cat.color + '22' }]}>
-          <MaterialCommunityIcons name={categoryIcon(cat.id)} size={20} color={cat.color} />
+        <View style={[styles.avatar, { backgroundColor: t.sunk }]}>
+          <MaterialCommunityIcons name={categoryIcon(cat.id)} size={18} color={t.muted} />
         </View>
       </View>
 
@@ -91,7 +91,7 @@ export default function DealCard({ deal, mine }: { deal: Deal; mine: Card[] }) {
         </View>
         {timing && (
           <View style={[styles.chip, { backgroundColor: timing.warn ? t.warnSoft : t.sunk }]}>
-            <Text style={[styles.chipText, { color: timing.warn ? t.warn : t.muted, fontWeight: timing.warn ? '700' : '500' }]}>{timing.label}</Text>
+            <Text style={[styles.chipText, { color: timing.warn ? t.warn : t.muted, fontWeight: timing.warn ? '600' : '400' }]}>{timing.label}</Text>
           </View>
         )}
       </View>
@@ -107,16 +107,16 @@ export default function DealCard({ deal, mine }: { deal: Deal; mine: Card[] }) {
 
 const styles = StyleSheet.create({
   card: {
-    borderWidth: 1.5, borderRadius: radius, padding: 16, paddingBottom: 12, gap: 12,
-    shadowColor: '#3c2814', shadowOpacity: 0.08, shadowRadius: 14, shadowOffset: { width: 0, height: 6 }, elevation: 2,
+    borderWidth: 1, borderRadius: radius, padding: 16, paddingBottom: 12, gap: 12,
+    shadowColor: '#000', shadowOpacity: 0.04, shadowRadius: 2, shadowOffset: { width: 0, height: 1 }, elevation: 1,
   },
   top: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 },
   offer: { flexDirection: 'row', alignItems: 'baseline', flexWrap: 'wrap', columnGap: 6, flex: 1 },
-  offerBig: { fontSize: 38, fontWeight: '800', letterSpacing: -1.6, lineHeight: 40, fontVariant: ['tabular-nums'] },
-  offerRest: { fontSize: 16, fontWeight: '700', letterSpacing: -0.2 },
-  offerWords: { fontSize: 24, fontWeight: '800', letterSpacing: -0.8, lineHeight: 28 },
+  offerBig: { fontSize: 34, fontWeight: '500', letterSpacing: -1, lineHeight: 38, fontVariant: ['tabular-nums'] },
+  offerRest: { fontSize: 15, fontWeight: '400' },
+  offerWords: { fontSize: 24, fontWeight: '500', letterSpacing: -0.5, lineHeight: 28 },
   avatar: { width: 42, height: 42, borderRadius: 13, alignItems: 'center', justifyContent: 'center' },
-  merchant: { fontSize: 18, fontWeight: '700', letterSpacing: -0.3 },
+  merchant: { fontSize: 18, fontWeight: '500', letterSpacing: -0.3 },
   cat: { fontSize: 13, marginTop: 2 },
   facts: { gap: 5, paddingTop: 12, borderTopWidth: 1, borderStyle: 'dashed' },
   fact: { flexDirection: 'row', alignItems: 'flex-start', gap: 8 },

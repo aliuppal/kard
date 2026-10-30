@@ -14,7 +14,7 @@ export default function TabLayout() {
         headerStyle: { backgroundColor: t.bg },
         headerShadowVisible: false,
         headerTintColor: t.ink,
-        headerTitleStyle: { fontWeight: '800', fontSize: 20 },
+        headerTitleStyle: { fontWeight: '600', fontSize: 20 },
       }}
     >
       <Tabs.Screen name="index" options={{ title: 'Kard', headerTitle: 'kard', tabBarLabel: 'Deals', tabBarIcon: ({ color }) => <FontAwesome name="credit-card" size={22} color={color} /> }} />

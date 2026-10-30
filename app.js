@@ -223,7 +223,8 @@
       : daysLeft < 0 ? '<span class="tag end">Expired</span>'
       : daysLeft <= 5 ? `<span class="tag end">${daysLeft === 0 ? 'Ends today' : 'Ends in ' + plural(daysLeft, 'day')}</span>`
       : `<span class="tag">Valid till ${fmt(d.until)}</span>`;
-    const limits = [d.max && 'Max ' + d.max, d.min && 'Min spend ' + d.min].filter(Boolean).join(' · ');
+    // Receipt lines — label, dotted leader, value — the one signature detail of the page
+    const line = (k, v) => `<li><span>${k}</span><i aria-hidden="true"></i><b>${esc(v)}</b></li>`;
 
     // "15% off" → big "15%" + "off"; "Rs 4/L off" → "Rs 4/L" + "off"; anything else stays whole.
     const om = /^(\d+(?:\.\d+)?%|Rs\s?[\d,]+(?:\/\w+)?)\s*(.*)$/.exec(d.offer || '');
@@ -231,19 +232,20 @@
       ? `<b>${esc(om[1])}</b>${om[2] ? `<span>${esc(om[2])}</span>` : ''}`
       : `<b class="words">${esc(d.offer)}</b>`;
 
-    return `<article class="deal${mine.length ? ' match' : ''}" style="--cc:${cat.color}">
+    return `<article class="deal${mine.length ? ' match' : ''}">
       <div class="deal-top">
         <div class="offer">${offer}</div>
-        <div class="avatar" title="${esc(cat.name)}">${ICON(cat.id, 20)}</div>
+        <div class="avatar" title="${esc(cat.name)}">${ICON(cat.id, 18)}</div>
       </div>
       <div class="deal-id"><h3>${esc(d.m)}</h3><div class="cat">${esc(cat.name)}</div></div>
       <ul class="facts">
-        <li>${ICON('calendar', 15)}${esc(schedLabel(d))}</li>
-        <li>${ICON('pin', 15)}${esc(cities)}</li>
-        ${limits ? `<li>${ICON('coins', 15)}${esc(limits)}</li>` : ''}
+        ${line('When', schedLabel(d))}
+        ${line('Where', cities)}
+        ${d.max ? line('Max discount', d.max) : ''}
+        ${d.min ? line('Min spend', d.min) : ''}
       </ul>
       <div class="tags">${bankChips}<span class="tag">${types}${d.nets ? ' · ' + esc(d.nets.join('/')) + ' only' : ''}</span>${timing}</div>
-      <details><summary>Terms</summary><p>${esc(d.terms || 'See merchant for details.')}</p>${d.src ? `<p><a href="${esc(d.src)}" target="_blank" rel="noopener">Offer source</a></p>` : ''}</details>
+      <details><summary>Terms</summary><p>${esc(d.terms || 'See the merchant for details')}</p>${d.src ? `<p><a href="${esc(d.src)}" target="_blank" rel="noopener">Offer source</a></p>` : ''}</details>
     </article>`;
   }
 
@@ -278,7 +280,7 @@
     const special = all.filter(d => d.sched.t !== 'daily');
     const every = all.filter(d => d.sched.t === 'daily');
     const title = sameDay(day, today) ? 'Today · ' + fmtLong(day) : fmtLong(day);
-    let html = navHead(title, summary(all.length, 'on'), 'prev-day', 'next-day', 'Today');
+    let html = navHead(title, summary(all.length, sameDay(day, today) ? 'today' : 'on ' + fmt(day)), 'prev-day', 'next-day', 'Today');
     if (!all.length) return html + emptyState('No deals match on this day. Try another day or loosen the filters.');
     if (special.length) html += `<h3 class="section-h">Only ${sameDay(day, today) ? 'today' : 'this day'} <small>${special.length}</small></h3>` + grid(special);
     if (every.length) html += `<h3 class="section-h">Everyday offers <small>${every.length}</small></h3>` + grid(every);
@@ -292,10 +294,10 @@
     const cat = catOf(d.c);
     const banks = d.banks.map(id => BANK[id].short);
     const who = banks.slice(0, 3).join(', ') + (banks.length > 3 ? ' +' + (banks.length - 3) : '');
-    return `<details class="drow${matchCards(d).length ? ' match' : ''}" style="--cc:${cat.color}">
+    return `<details class="drow">
       <summary>
         <span class="avatar">${ICON(cat.id, 17)}</span>
-        <span class="drow-m"><b>${esc(d.m)}</b><small>${esc(cat.name)} · ${esc(who)}</small></span>
+        <span class="drow-m"><b>${esc(d.m)}${matchCards(d).length ? ICON('check', 14) : ''}</b><small>${esc(cat.name)} · ${esc(who)}</small></span>
         <span class="drow-o">${esc(d.offer)}</span>
       </summary>
       ${dealCard(d)}
@@ -395,7 +397,7 @@
   function renderWallet() {
     const w = $('#wallet');
     if (!state.cards.length) {
-      w.innerHTML = `<div class="empty-wallet"><span>Add your debit and credit cards to see only the deals you can actually use.${sb && !session ? ' Sign in with Google (above) to sync them across devices.' : ''}</span>
+      w.innerHTML = `<div class="empty-wallet"><span>Add the debit and credit cards you carry and Kard shows only the deals they unlock.${sb && !session ? ' Sign in with Google to keep them on every device.' : ''}</span>
         <div class="empty-actions"><button class="btn primary sm" data-act="add-card">Add a card</button>
         <button class="btn sm ghost" data-act="demo-cards">Try with sample cards</button></div></div>`;
       return;
@@ -403,21 +405,21 @@
     w.innerHTML = state.cards.map(c => {
       const b = BANK[c.bank];
       const p = PRODUCT[c.product];
-      if (p && p.img) {
-        return `<figure class="card photo" title="${esc(p.name)}">
-        <button class="x" data-act="del-card" data-id="${c.id}" aria-label="Remove ${esc(p.name)}">${ICON('x', 14)}</button>
-        <img src="cards/${p.id}.webp" alt="${esc(p.name)}" loading="lazy">
-        <figcaption><b>${esc(c.name || p.name)}</b><span>${c.last4 ? '•••• ' + esc(c.last4) + ' · ' : ''}${esc(c.network || p.nets[0])}</span></figcaption>
+      const name = c.name || (p ? p.name : b.name + (c.type === 'credit' ? ' credit card' : ' debit card'));
+      const meta = [c.type === 'credit' ? 'Credit' : 'Debit', c.network || (p && p.nets[0]), c.last4 && '•••• ' + c.last4].filter(Boolean).join(' · ');
+      const face = p && p.img
+        ? `<div class="face photo"><img src="cards/${p.id}.webp" alt="" loading="lazy"></div>`
+        : `<div class="face card tier-${p ? p.tier : 'classic'}" style="--bc:${b.color}">
+            <div class="card-top"><b>${esc(p ? shortName(p) : b.name)}</b></div>
+            <span class="chip-ic" aria-hidden="true"></span>
+            <div class="meta"><span class="num">${c.last4 ? '•••• ' + esc(c.last4) : ''}</span><span class="net">${esc(c.network || '')}</span></div>
+          </div>`;
+      return `<figure class="wcard" title="${esc(name)}">
+        ${face}
+        <button class="x" data-act="del-card" data-id="${c.id}" aria-label="Remove ${esc(name)}">${ICON('x', 14)}</button>
+        <figcaption><b>${esc(name)}</b><span>${esc(meta)}</span></figcaption>
       </figure>`;
-      }
-      return `<div class="card tier-${p ? p.tier : 'classic'}" style="--bc:${b.color}">
-        <button class="x" data-act="del-card" data-id="${c.id}" aria-label="Remove ${esc(b.name)} card">${ICON('x', 14)}</button>
-        <div class="card-top"><b>${esc(p ? shortName(p) : b.name)}</b><span class="type">${c.type === 'credit' ? 'Credit' : 'Debit'}</span></div>
-        <span class="chip-ic" aria-hidden="true"></span>
-        <div class="meta"><span class="num">${c.last4 ? '•••• ' + esc(c.last4) : esc(c.name || '')}</span><span class="net">${esc(c.network || '')}</span></div>
-        ${c.name && c.last4 ? `<span class="nick">${esc(c.name)}</span>` : ''}
-      </div>`;
-    }).join('') + `<button class="card add" data-act="add-card">${ICON('plus', 22)}<span>Add card</span></button>`;
+    }).join('') + `<button class="wcard add" data-act="add-card"><span class="face">${ICON('plus', 20)}<span>Add card</span></span></button>`;
   }
 
   function renderFilters() {

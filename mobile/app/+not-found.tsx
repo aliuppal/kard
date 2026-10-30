@@ -19,7 +19,7 @@ export default function NotFoundScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: 20 },
-  title: { fontSize: 18, fontWeight: '700' },
+  title: { fontSize: 18, fontWeight: '500' },
   link: { marginTop: 15, paddingVertical: 15 },
   linkText: { fontSize: 14, fontWeight: '600' },
 });

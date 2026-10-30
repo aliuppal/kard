@@ -98,7 +98,7 @@ export default function AddCardScreen() {
             <Text style={{ color: t.ink, fontWeight: '600' }}>Cancel</Text>
           </Pressable>
           <Pressable onPress={save} disabled={saving} style={[styles.btn, { flex: 1, backgroundColor: t.brand, opacity: saving ? 0.7 : 1 }]}>
-            {saving ? <ActivityIndicator color={t.brandInk} /> : <Text style={{ color: t.brandInk, fontWeight: '700' }}>Save card</Text>}
+            {saving ? <ActivityIndicator color={t.brandInk} /> : <Text style={{ color: t.brandInk, fontWeight: '500' }}>Save card</Text>}
           </Pressable>
         </View>
       </ScrollView>
@@ -108,7 +108,7 @@ export default function AddCardScreen() {
 
 const styles = StyleSheet.create({
   root: { flex: 1 },
-  label: { fontSize: 12, fontWeight: '700', marginBottom: 8, textTransform: 'uppercase', letterSpacing: 0.3 },
+  label: { fontSize: 12, fontWeight: '500', marginBottom: 8 },
   wrap: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   chip: { paddingHorizontal: 12, paddingVertical: 7, borderRadius: 999, borderWidth: 1 },
   row: { flexDirection: 'row', gap: 12 },

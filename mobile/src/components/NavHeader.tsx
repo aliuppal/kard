@@ -23,7 +23,7 @@ export default function NavHeader({ title, sub, onPrev, onNext, onToday, todayLa
 
 const styles = StyleSheet.create({
   wrap: { flexDirection: 'row', alignItems: 'center', gap: 10, paddingHorizontal: 16, marginTop: 14, marginBottom: 10 },
-  title: { fontSize: 18, fontWeight: '800' },
+  title: { fontSize: 18, fontWeight: '600' },
   sub: { fontSize: 12.5, marginTop: 2 },
   nav: { flexDirection: 'row', gap: 6 },
   btn: { borderWidth: 1, borderRadius: 9, paddingHorizontal: 10, paddingVertical: 6 },

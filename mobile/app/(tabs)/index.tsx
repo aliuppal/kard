@@ -39,8 +39,8 @@ export default function DealsScreen() {
             { value: 'daily', label: 'Daily' }, { value: 'weekly', label: 'Weekly' }, { value: 'monthly', label: 'Monthly' },
           ]} /></View>
           <Pressable onPress={() => setFiltersOpen(true)} style={[styles.filterBtn, { borderColor: t.line, backgroundColor: t.surface }]}>
-            <Text style={{ color: t.ink, fontWeight: '700' }}>Filters</Text>
-            {badge > 0 && <View style={[styles.badge, { backgroundColor: t.brand }]}><Text style={{ color: t.brandInk, fontSize: 11, fontWeight: '700' }}>{badge}</Text></View>}
+            <Text style={{ color: t.ink, fontWeight: '500' }}>Filters</Text>
+            {badge > 0 && <View style={[styles.badge, { backgroundColor: t.brand }]}><Text style={{ color: t.brandInk, fontSize: 11, fontWeight: '500' }}>{badge}</Text></View>}
           </Pressable>
         </View>
         <CategoryChips />
@@ -197,14 +197,14 @@ const styles = StyleSheet.create({
   filterBtn: { flexDirection: 'row', alignItems: 'center', gap: 6, borderWidth: 1, borderRadius: 12, paddingHorizontal: 14, height: 44 },
   badge: { width: 18, height: 18, borderRadius: 9, alignItems: 'center', justifyContent: 'center' },
   loading: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingTop: 60 },
-  sectionTitle: { fontSize: 15, fontWeight: '700', paddingHorizontal: 16, marginBottom: 10 },
+  sectionTitle: { fontSize: 15, fontWeight: '500', paddingHorizontal: 16, marginBottom: 10 },
   dayCol: { marginHorizontal: 16, marginBottom: 12, borderWidth: 1, borderRadius: 14, padding: 12, gap: 10 },
-  dayTitle: { fontSize: 14, fontWeight: '700', marginBottom: 2 },
+  dayTitle: { fontSize: 14, fontWeight: '500', marginBottom: 2 },
   calHeadRow: { flexDirection: 'row', paddingHorizontal: 16, marginBottom: 6 },
-  calHead: { flex: 1, textAlign: 'center', fontSize: 11, fontWeight: '700' },
+  calHead: { flex: 1, textAlign: 'center', fontSize: 11, fontWeight: '500' },
   calGrid: { flexDirection: 'row', flexWrap: 'wrap', paddingHorizontal: 12 },
   calCell: { width: '14.28%', aspectRatio: 1, padding: 4, alignItems: 'center', justifyContent: 'center' },
   calDay: { borderWidth: 2, borderRadius: 10, margin: 2 },
-  calNum: { fontSize: 13, fontWeight: '700', width: 22, height: 22, borderRadius: 11, textAlign: 'center', textAlignVertical: 'center', overflow: 'hidden' },
-  calCount: { fontSize: 10.5, fontWeight: '700', marginTop: 2 },
+  calNum: { fontSize: 13, fontWeight: '500', width: 22, height: 22, borderRadius: 11, textAlign: 'center', textAlignVertical: 'center', overflow: 'hidden' },
+  calCount: { fontSize: 10.5, fontWeight: '500', marginTop: 2 },
 });

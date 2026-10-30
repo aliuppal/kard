@@ -46,7 +46,7 @@ export default function FiltersModal({ visible, onClose }: { visible: boolean; o
       <SafeAreaView style={[styles.root, { backgroundColor: t.bg }]}>
         <View style={styles.header}>
           <Text style={[styles.title, { color: t.ink }]}>Filters</Text>
-          <Pressable onPress={onClose}><Text style={{ color: t.brand, fontWeight: '700', fontSize: 15 }}>Done</Text></Pressable>
+          <Pressable onPress={onClose}><Text style={{ color: t.brand, fontWeight: '500', fontSize: 15 }}>Done</Text></Pressable>
         </View>
         <ScrollView contentContainerStyle={{ padding: 16, gap: 4 }}>
           <Section title="Search">
@@ -105,9 +105,9 @@ export default function FiltersModal({ visible, onClose }: { visible: boolean; o
 const styles = StyleSheet.create({
   root: { flex: 1 },
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, paddingVertical: 14 },
-  title: { fontSize: 18, fontWeight: '800' },
+  title: { fontSize: 18, fontWeight: '600' },
   section: { marginBottom: 18 },
-  sectionTitle: { fontSize: 12, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 0.3, marginBottom: 8 },
+  sectionTitle: { fontSize: 12, fontWeight: '500', marginBottom: 8 },
   wrap: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   chip: { paddingHorizontal: 12, paddingVertical: 7, borderRadius: 999, borderWidth: 1 },
   input: { borderWidth: 1, borderRadius: 10, paddingHorizontal: 12, paddingVertical: 10, fontSize: 15 },
